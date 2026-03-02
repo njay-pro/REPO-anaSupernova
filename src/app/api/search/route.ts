@@ -8,18 +8,18 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Missing query" }, { status: 400 });
         }
 
-        const proKey = process.env.PRO_API_KEY;
-        if (!proKey) {
-            return NextResponse.json({ error: "PRO API key not configured for embeddings." }, { status: 500 });
+        const apiKey = process.env.API_KEY;
+        if (!apiKey) {
+            return NextResponse.json({ error: "API key not configured." }, { status: 500 });
         }
 
         // 1. Get Embedding
-        const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${proKey}`;
+        const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${apiKey}`;
         const embedResponse = await fetch(embedUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: "models/text-embedding-004",
+                model: "models/gemini-embedding-001",
                 content: { parts: [{ text: query }] }
             })
         });

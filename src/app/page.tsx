@@ -13,44 +13,41 @@ import { ApiService } from '@/lib/api';
 const AppContent = () => {
   const { state, dispatch } = useContext(StyleContext);
 
-  useEffect(() => {
-    if (state.triggerGeneration) {
-      handleGenerate();
-      dispatch({ type: 'SET_TRIGGER_GENERATION', payload: false });
-    }
-  }, [state.triggerGeneration]);
+  const handleGenerate = async (overrides: any = {}) => {
+    // Merge current state with overrides (important for concurrent tool calls)
+    const currentState = { ...state, ...overrides };
 
-  const handleGenerate = async () => {
-    if (!state.subject1 || Object.keys(state.activeStyleJson).length === 0) {
+    if (!currentState.subject1 || Object.keys(currentState.activeStyleJson).length === 0) {
       dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Missing Subject or Style Description", type: 'error' } });
       return;
     }
 
     dispatch({ type: 'SET_VIEW', payload: 'gallery' });
 
-    const tempId = Date.now();
+    const tempId = typeof crypto !== 'undefined' ? crypto.randomUUID() : (Date.now() + Math.random()).toString(); // Bulletproof ID for parallel batch calls
     dispatch({
       type: 'ADD_GALLERY_ITEM',
       payload: {
         id: tempId,
         status: 'loading',
         image: null,
-        json: JSON.stringify(state.activeStyleJson),
-        sub1: state.subject1,
-        sub2: state.subject2,
+        json: JSON.stringify(currentState.activeStyleJson),
+        sub1: currentState.subject1,
+        sub2: currentState.subject2,
         type: 'generated'
       }
     });
 
     try {
-      const images = [state.subject1];
-      if (state.subject2) images.push(state.subject2);
-      if (state.useExtractedBg && state.extractedBg) images.push(state.extractedBg);
-      if (state.useExtractedOutfit && state.extractedOutfit) images.push(state.extractedOutfit);
+      const images = [currentState.subject1];
+      if (currentState.subject2) images.push(currentState.subject2);
+      if (currentState.useExtractedBg && currentState.extractedBg) images.push(currentState.extractedBg);
+      if (currentState.useExtractedOutfit && currentState.extractedOutfit) images.push(currentState.extractedOutfit);
 
-      const instruction = `Generate a photo of me with the following JSON description. Do not alter my facial features, hair, or body. ${JSON.stringify(state.activeStyleJson)}`;
-
-      const res = await ApiService.generateCall(instruction, images, state.selectedModel);
+      const res = await ApiService.generateCall('', images, currentState.selectedModel, {
+        promptKey: 'generate-image',
+        params: { activeStyleJson: currentState.activeStyleJson }
+      });
       const candidate = res.candidates?.[0];
       const data = candidate?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
       const thoughtPart = candidate?.content?.parts?.find((p: any) => p.thoughtSignature || p.thought_signature);
@@ -75,6 +72,13 @@ const AppContent = () => {
       dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Generation failed: ${e.message}`, type: 'error' } });
     }
   };
+
+  // Expose handleGenerate to the context or a shared ref if needed, 
+  // but for now we'll pass it down or handle it in ChatView separately.
+  // Actually, let's put it in the context so it's globally available.
+  useEffect(() => {
+    dispatch({ type: 'REGISTER_GENERATE', payload: handleGenerate });
+  }, [state.activeStyleJson, state.subject1, state.subject2, state.selectedModel]);
 
   return (
     <div className="h-screen bg-gray-100 text-gray-900 font-sans overflow-hidden flex flex-col relative w-full">

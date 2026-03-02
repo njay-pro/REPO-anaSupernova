@@ -1,16 +1,26 @@
 import { extractJson } from '@/lib/utils'; // Will add a tiny util
 
 export const ApiService = {
-    async generateCall(instruction: string, images: any[] = [], model = 'gemini-2.5-flash-image-preview') {
+    async generateCall(instruction: string, images: any[] = [], model = 'nano-banana-2', options: any = {}) {
         const execute = async (attempt = 0): Promise<any> => {
             try {
+                const body = {
+                    instruction,
+                    images,
+                    model,
+                    promptKey: options.promptKey,
+                    params: options.params
+                };
                 const response = await fetch('/api/generate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ instruction, images, model })
+                    body: JSON.stringify(body)
                 });
 
-                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+                }
                 return await response.json();
             } catch (e: any) {
                 if (attempt < 2) {
@@ -23,7 +33,7 @@ export const ApiService = {
         return execute();
     },
 
-    async chatCall(history: any[], model = 'gemini-2.5-flash-preview-09-2025') {
+    async chatCall(history: any[], model = 'gemini-3-flash') {
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

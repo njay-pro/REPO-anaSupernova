@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { ChevronDown, ChevronRight, RefreshCw } from 'lucide-react';
 import { StyleContext } from '@/context/StyleContext';
 import { ApiService } from '@/lib/api';
-import { SYSTEM_PROMPTS } from '@/lib/prompts';
+// SYSTEM_PROMPTS removed, using promptKey instead
 import { Spinner } from '@/components/ui/Spinner';
 
 interface AccordionGroupProps {
@@ -20,8 +20,10 @@ export const AccordionGroup: React.FC<AccordionGroupProps> = ({ title, data, onU
     const handleShuffle = async (key: string, group: string) => {
         setLoadingKey(key);
         try {
-            const suggestionStr = SYSTEM_PROMPTS.suggestion(key, state.activeStyleJson);
-            const suggestionRes = await ApiService.generateCall(suggestionStr, [], state.selectedModel);
+            const suggestionRes = await ApiService.generateCall('', [], state.selectedModel, {
+                promptKey: 'suggestion',
+                params: { field: key, json: state.activeStyleJson }
+            });
 
             const text = suggestionRes.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
             if (text) {

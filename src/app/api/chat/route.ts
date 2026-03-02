@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { SYSTEM_PROMPTS, TOOLS_SCHEMA } from '@/lib/prompts';
+import { getPrompt, TOOLS_SCHEMA } from '@/lib/prompts';
 
 const baseUrl = "https://generativelanguage.googleapis.com/v1beta/models/";
 
@@ -7,16 +7,18 @@ export async function POST(request: Request) {
     try {
         const { history, model } = await request.json();
 
-        const isPro = model && model.includes('pro');
-        const currentKey = isPro ? process.env.PRO_API_KEY : process.env.API_KEY;
+        const currentKey = process.env.API_KEY;
 
         if (!currentKey) {
             return NextResponse.json({ error: "API key not configured." }, { status: 500 });
         }
 
-        let url = `${baseUrl}${model || 'gemini-2.5-flash-preview-09-2025'}:generateContent?key=${currentKey}`;
+        let actualModel = model;
+        if (!actualModel || actualModel === 'gemini-3-flash' || actualModel.includes('2.5')) actualModel = 'gemini-3-flash-preview';
 
-        const dynamicSystemPrompt = SYSTEM_PROMPTS.chat();
+        let url = `${baseUrl}${actualModel}:generateContent?key=${currentKey}`;
+
+        const dynamicSystemPrompt = getPrompt('chat');
 
         const payload = {
             contents: history,

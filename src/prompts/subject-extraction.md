@@ -1,0 +1,1 @@
+Extract the main human subject from this image wearing the exact same outfit, colors, and accessories from this image, place the subject in a studio infinity white background. Layout: Two standing in a dynamic full-body pose (one showing the front view, one showing the back view) and one sitting.

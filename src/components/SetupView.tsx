@@ -3,7 +3,7 @@ import React, { useState, useContext } from 'react';
 import { Sparkles, User, Webhook, Edit3 } from 'lucide-react';
 import { StyleContext } from '@/context/StyleContext';
 import { ApiService } from '@/lib/api';
-import { SYSTEM_PROMPTS, JSON_STRUCTURE } from '@/lib/prompts';
+import { JSON_STRUCTURE } from '@/lib/prompt-schemas';
 import { FileUploader } from '@/components/ui/FileUploader';
 import { HybridSlot } from '@/components/ui/HybridSlot';
 import { AccordionGroup } from '@/components/ui/AccordionGroup';
@@ -20,7 +20,10 @@ export const SetupView = () => {
         if (!state.reference) return dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Upload reference first", type: 'error' } });
         setIsExtractingDesc(true);
         try {
-            const res = await ApiService.generateCall(SYSTEM_PROMPTS.styleExtraction(JSON_STRUCTURE), [state.reference], 'gemini-2.5-flash-image-preview');
+            const res = await ApiService.generateCall('', [state.reference], 'gemini-3-flash-preview', {
+                promptKey: 'style-extraction',
+                params: { jsonStructure: JSON_STRUCTURE }
+            });
             const text = res.candidates?.[0]?.content?.parts?.[0]?.text;
             const json = ApiService.extractJson(text);
             if (json) {
@@ -38,10 +41,11 @@ export const SetupView = () => {
         if (!state.reference) return dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Upload reference first", type: 'error' } });
         const isBg = type === 'background';
         const setter = isBg ? setBgLoading : setOutfitLoading;
-        const prompt = isBg ? SYSTEM_PROMPTS.bgExtraction : SYSTEM_PROMPTS.outfitExtraction;
         setter(true);
         try {
-            const res = await ApiService.generateCall(prompt, [state.reference]);
+            const res = await ApiService.generateCall('', [state.reference], state.selectedModel, {
+                promptKey: isBg ? 'bg-extraction' : 'outfit-extraction'
+            });
             const imgData = res.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
             if (imgData) {
                 dispatch({ type: 'SET_ASSET', key: isBg ? 'extractedBg' : 'extractedOutfit', payload: imgData });
@@ -96,8 +100,9 @@ export const SetupView = () => {
                         value={state.selectedModel}
                         onChange={(e) => dispatch({ type: 'SET_MODEL', payload: e.target.value })}
                     >
-                        <option value="gemini-2.5-flash-image-preview">Gemini 2.5 Flash</option>
-                        <option value="gemini-3-pro-image-preview">Gemini 3.0 Pro</option>
+                        <option value="nano-banana-pro">Nano Banana Pro</option>
+                        <option value="nano-banana-2">Nano Banana 2 (Default)</option>
+                        <option value="nano-banana">Nano Banana</option>
                     </select>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -115,7 +120,9 @@ export const SetupView = () => {
                         onAction={async () => {
                             if (!state.subject2) return;
                             try {
-                                const res = await ApiService.generateCall(SYSTEM_PROMPTS.subjectExtraction, [state.subject2]);
+                                const res = await ApiService.generateCall('', [state.subject2], state.selectedModel, {
+                                    promptKey: 'subject-extraction'
+                                });
                                 const img = res.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
                                 if (img) {
                                     dispatch({ type: 'SET_ASSET', key: 'subject2', payload: img });
@@ -205,8 +212,8 @@ export const SetupView = () => {
                                     onClick={handleSendToWebhook}
                                     disabled={sendingWebhook}
                                     className={`text-xs px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 transition-colors ${state.webhookMode === 'test'
-                                            ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                                            : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                                        ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
+                                        : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
                                         }`}
                                     title={`Send JSON to n8n ${state.webhookMode.toUpperCase()}`}
                                 >

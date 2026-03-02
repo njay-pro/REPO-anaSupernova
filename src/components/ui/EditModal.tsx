@@ -5,7 +5,7 @@ import { StyleContext } from '@/context/StyleContext';
 import { FileUploader } from './FileUploader';
 import { Spinner } from './Spinner';
 import { ApiService } from '@/lib/api';
-import { SYSTEM_PROMPTS } from '@/lib/prompts';
+// SYSTEM_PROMPTS removed, using promptKey instead
 
 export const EditModal = () => {
     const { state, dispatch } = useContext(StyleContext);
@@ -21,7 +21,9 @@ export const EditModal = () => {
     const handleSuggest = async () => {
         setLoading(true);
         try {
-            const res = await ApiService.generateCall(SYSTEM_PROMPTS.editSuggestion, [baseImage]);
+            const res = await ApiService.generateCall('', [baseImage], state.selectedModel, {
+                promptKey: 'edit-suggestion'
+            });
             const json = ApiService.extractJson(res.candidates?.[0]?.content?.parts?.[0]?.text || '');
             if (json && Array.isArray(json)) setSuggestions(json);
         } catch (e) {

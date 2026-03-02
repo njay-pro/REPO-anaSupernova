@@ -84,13 +84,18 @@ export const ChatView = () => {
         }
     };
 
+    const stateRef = useRef(state);
+    useEffect(() => {
+        stateRef.current = state;
+    }, [state]);
+
     const executeTool = async (toolName: string, args: any) => {
         console.log("Executing Tool:", toolName, args);
         switch (toolName) {
             case 'get_description':
-                return { message: JSON.stringify(state.activeStyleJson) };
+                return { message: JSON.stringify(stateRef.current.activeStyleJson) };
             case 'edit_description': {
-                const currentJson = { ...state.activeStyleJson };
+                const currentJson = { ...stateRef.current.activeStyleJson };
                 const merge = (target: any, source: any) => {
                     for (const key in source) {
                         if (source[key] instanceof Object && key in target) Object.assign(source[key], merge(target[key], source[key]));
@@ -99,6 +104,8 @@ export const ChatView = () => {
                     return target;
                 };
                 merge(currentJson, args);
+                // Immediately update local ref to ensure parallel tools in same loop see this update
+                stateRef.current = { ...stateRef.current, activeStyleJson: currentJson };
                 dispatch({ type: 'SET_STYLE_JSON', payload: currentJson });
                 return { message: "Style updated successfully." };
             }
@@ -112,8 +119,12 @@ export const ChatView = () => {
                     return { message: `Error searching library: ${e.message}` };
                 }
             case 'generate_image':
-                dispatch({ type: 'SET_TRIGGER_GENERATION', payload: true });
-                return { message: "Image generation triggered." };
+                if (stateRef.current.generateFn) {
+                    // Pass the latest activeStyleJson explicitly to override any stale closures in generateFn
+                    stateRef.current.generateFn({ activeStyleJson: stateRef.current.activeStyleJson });
+                    return { message: "Image generation triggered." };
+                }
+                return { message: "Error: Generation function not registered." };
             default: return { message: "Error: Unknown tool." };
         }
     };
@@ -126,7 +137,7 @@ export const ChatView = () => {
         dispatch({ type: 'ADD_MESSAGE', payload: { role: 'user', text: userMsg } });
         setIsTyping(true);
 
-        const history = state.messages.map((m: any) => {
+        const history = stateRef.current.messages.map((m: any) => {
             const part: any = { text: m.text };
             if (m.thoughtSignature) part.thoughtSignature = m.thoughtSignature;
             return { role: m.role === 'assistant' ? 'model' : 'user', parts: [part] };
@@ -238,14 +249,7 @@ export const ChatView = () => {
             <div className="px-4 pt-3 flex justify-end">
                 <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 shadow-sm border border-gray-100">
                     <Cpu size={14} className="text-violet-500" />
-                    <select
-                        value={state.chatModel}
-                        onChange={(e) => dispatch({ type: 'SET_CHAT_MODEL', payload: e.target.value })}
-                        className="text-xs font-medium text-gray-600 bg-transparent border-none outline-none cursor-pointer pr-1"
-                    >
-                        <option value="gemini-2.5-flash-preview-09-2025">Gemini 2.5 Flash</option>
-                        <option value="gemini-3-pro-preview">Gemini 3.0 Pro</option>
-                    </select>
+                    <span className="text-xs font-bold text-gray-700">Gemini 3.0 Flash (Preview)</span>
                 </div>
             </div>
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 pb-32 space-y-4">

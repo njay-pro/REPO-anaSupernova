@@ -7,8 +7,8 @@ const initialState = {
     view: 'setup',
     loading: false,
     loadingMessage: '',
-    selectedModel: 'gemini-2.5-flash-image-preview',
-    chatModel: 'gemini-2.5-flash-preview-09-2025',
+    selectedModel: 'nano-banana-2',
+    chatModel: 'gemini-3-flash-preview',
     webhookMode: 'prod',
     notification: null,
     subject1: null,
@@ -23,7 +23,7 @@ const initialState = {
     gallery: [],
     messages: [{ role: 'assistant', text: "Hi! I'm your Agentic Style Assistant. I can plan, research the library, and edit styles for you.", isHidden: false }],
     editModal: { isOpen: false, baseImage: null, context: null },
-    triggerGeneration: false
+    generateFn: null
 };
 
 const reducer = (state: any, action: any) => {
@@ -53,7 +53,7 @@ const reducer = (state: any, action: any) => {
         case 'REMOVE_GALLERY_ITEM': return { ...state, gallery: state.gallery.filter((item: any) => item.id !== action.payload) };
         case 'ADD_MESSAGE': return { ...state, messages: [...state.messages, action.payload] };
         case 'SET_MODAL': return { ...state, editModal: action.payload };
-        case 'SET_TRIGGER_GENERATION': return { ...state, triggerGeneration: action.payload };
+        case 'REGISTER_GENERATE': return { ...state, generateFn: action.payload };
         case 'LOAD_CHAT_CONTEXT': {
             const hasSignature = !!action.payload.signature;
             return {
