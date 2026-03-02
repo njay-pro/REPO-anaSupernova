@@ -1,0 +1,67 @@
+import { NextResponse } from 'next/server';
+
+export async function POST(request: Request) {
+    try {
+        const { query } = await request.json();
+
+        if (!query) {
+            return NextResponse.json({ error: "Missing query" }, { status: 400 });
+        }
+
+        const proKey = process.env.PRO_API_KEY;
+        if (!proKey) {
+            return NextResponse.json({ error: "PRO API key not configured for embeddings." }, { status: 500 });
+        }
+
+        // 1. Get Embedding
+        const embedUrl = `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${proKey}`;
+        const embedResponse = await fetch(embedUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: "models/text-embedding-004",
+                content: { parts: [{ text: query }] }
+            })
+        });
+
+        if (!embedResponse.ok) {
+            const err = await embedResponse.json();
+            throw new Error(err.error?.message || "Failed to generate embedding");
+        }
+        const embedData = await embedResponse.json();
+        const vector = embedData.embedding.values;
+
+        // 2. Search Pinecone
+        const pineconeHost = process.env.PINECONE_HOST;
+        const pineconeKey = process.env.PINECONE_API_KEY;
+
+        if (!pineconeHost || !pineconeKey) {
+            return NextResponse.json({ error: "Pinecone not fully configured." }, { status: 500 });
+        }
+
+        const url = `${pineconeHost}/query`;
+        const pineconeResponse = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Api-Key': pineconeKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                vector,
+                topK: 3,
+                includeMetadata: true
+            })
+        });
+
+        if (!pineconeResponse.ok) {
+            throw new Error(`Pinecone Error: ${pineconeResponse.statusText}`);
+        }
+
+        const searchData = await pineconeResponse.json();
+        return NextResponse.json(searchData);
+
+    } catch (error: any) {
+        console.error("Search API Error:", error);
+        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+    }
+}
