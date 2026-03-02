@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
-import { X, Layers, Download, Wand2 } from 'lucide-react';
+import { X, Layers, Download, Wand2, Crop as CropIcon } from 'lucide-react';
+import { CropModal } from './CropModal';
 
 interface HybridSlotProps {
     type: 'background' | 'outfit';
@@ -21,6 +22,7 @@ const Spinner = ({ className = "w-5 h-5" }) => (
 export const HybridSlot: React.FC<HybridSlotProps> = ({
     type, image, onUpload, onClear, onExtract, isLoading, isChecked, onToggle, hasJson, onExtractJson
 }) => {
+    const [isCropping, setIsCropping] = React.useState(false);
     const fileInput = useRef<HTMLInputElement>(null);
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -55,6 +57,9 @@ export const HybridSlot: React.FC<HybridSlotProps> = ({
                             <span className="text-xs font-medium">Use</span>
                         </div>
                         <div className="flex gap-1">
+                            <button onClick={() => setIsCropping(true)} className="p-1.5 text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-md" title="Crop Image">
+                                <CropIcon size={14} />
+                            </button>
                             <button onClick={onExtractJson} disabled={!hasJson} className={`p-1.5 rounded-md ${hasJson ? 'text-violet-700 bg-violet-50 hover:bg-violet-100' : 'text-gray-300'}`} title="Transfer">
                                 <Layers size={14} />
                             </button>
@@ -77,6 +82,16 @@ export const HybridSlot: React.FC<HybridSlotProps> = ({
                         <input ref={fileInput} type="file" className="hidden" onChange={handleFile} />
                     </div>
                 </div>
+            )}
+            {image && (
+                <CropModal
+                    isOpen={isCropping}
+                    imageSrc={`data:image/png;base64,${image}`}
+                    onClose={() => setIsCropping(false)}
+                    onCropComplete={(croppedBase64) => {
+                        onUpload(croppedBase64);
+                    }}
+                />
             )}
         </div>
     );

@@ -48,7 +48,7 @@ export const EditModal = () => {
             if (data) {
                 dispatch({
                     type: 'ADD_GALLERY_ITEM',
-                    payload: { id: Date.now(), image: data, json: "{}", sub1: context?.sub1, sub2: context?.sub2, type: 'generated', status: 'complete' }
+                    payload: { id: Date.now(), image: data, json: "{}", sub1: context?.sub1, sub2: context?.sub2, type: 'generated', status: 'complete', model: state.selectedModel }
                 });
                 dispatch({ type: 'SET_MODAL', payload: { isOpen: false, baseImage: null, context: null } });
                 dispatch({ type: 'SET_VIEW', payload: 'gallery' });

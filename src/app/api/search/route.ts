@@ -20,12 +20,14 @@ export async function POST(request: Request) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: "models/gemini-embedding-001",
-                content: { parts: [{ text: query }] }
+                content: { parts: [{ text: query }] },
+                outputDimensionality: 768
             })
         });
 
         if (!embedResponse.ok) {
             const err = await embedResponse.json();
+            console.error("Embedding Error:", err);
             throw new Error(err.error?.message || "Failed to generate embedding");
         }
         const embedData = await embedResponse.json();
@@ -54,7 +56,9 @@ export async function POST(request: Request) {
         });
 
         if (!pineconeResponse.ok) {
-            throw new Error(`Pinecone Error: ${pineconeResponse.statusText}`);
+            const errorBody = await pineconeResponse.text();
+            console.error("Pinecone Error Body:", errorBody);
+            throw new Error(`Pinecone Error: ${pineconeResponse.status} ${pineconeResponse.statusText} - ${errorBody}`);
         }
 
         const searchData = await pineconeResponse.json();

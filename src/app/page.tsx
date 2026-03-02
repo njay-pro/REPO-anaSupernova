@@ -34,7 +34,8 @@ const AppContent = () => {
         json: JSON.stringify(currentState.activeStyleJson),
         sub1: currentState.subject1,
         sub2: currentState.subject2,
-        type: 'generated'
+        type: 'generated',
+        model: currentState.selectedModel
       }
     });
 
