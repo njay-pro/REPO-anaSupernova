@@ -49,12 +49,14 @@ export async function POST(request: Request) {
             config: config
         });
 
-        // The app currently expects a `res.candidates?.[0]?.content?.parts` structure
-        // The new SDK resolves to an object with `candidates` array, so it mostly matches.
-        // Let's coerce it to the structure the frontend expects or just pass the raw response.
+        // Normalize response for the frontend to prevent structure mismatches
+        // Ensure candidates exist and have the expected content structure
+        if (!response || !response.candidates || response.candidates.length === 0) {
+            console.error("No candidates in response:", JSON.stringify(response, null, 2));
+            throw new Error("Model failed to generate any candidates. Possible safety filter or internal error.");
+        }
 
-        // SDK typings returns a `GenerateContentResponse`, which does match the REST payload structurally.
-        // We will just return the JSON representation of the response object.
+        // Return a clean, serializable JSON response
         return NextResponse.json(response);
 
     } catch (error: any) {

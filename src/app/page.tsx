@@ -71,8 +71,13 @@ const AppContent = () => {
           aspectRatio: currentState.aspectRatio
         });
         const candidate = res.candidates?.[0];
-        const data = candidate?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
-        const thoughtPart = candidate?.content?.parts?.find((p: any) => p.thoughtSignature || p.thought_signature);
+        const parts = candidate?.content?.parts || [];
+
+        // Find image part - handle both camelCase (SDK) and snake_case (REST)
+        const imagePart = parts.find((p: any) => p.inlineData || p.inline_data);
+        const data = imagePart ? (imagePart.inlineData?.data || imagePart.inline_data?.data) : null;
+
+        const thoughtPart = parts.find((p: any) => p.thoughtSignature || p.thought_signature);
         const signature = thoughtPart ? (thoughtPart.thoughtSignature || thoughtPart.thought_signature) : null;
 
         if (data) {
@@ -86,10 +91,20 @@ const AppContent = () => {
             }
           });
         } else {
-          throw new Error("No image data returned");
+          // Check for specific failure reasons in candidate (e.g. safety filters)
+          const finishReason = candidate?.finishReason || candidate?.finish_reason;
+          const msg = finishReason ? `Model finished with reason: ${finishReason}` : "No image data returned";
+          throw new Error(msg);
         }
       } catch (e: any) {
-        dispatch({ type: 'REMOVE_GALLERY_ITEM', payload: tempId });
+        dispatch({
+          type: 'UPDATE_GALLERY_ITEM',
+          payload: {
+            id: tempId,
+            status: 'failed',
+            error: e.message
+          }
+        });
         dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Generation failed: ${e.message}`, type: 'error' } });
       }
     }));
