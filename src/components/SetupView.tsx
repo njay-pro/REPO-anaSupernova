@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useContext } from 'react';
-import { Sparkles, User, Webhook, Edit3 } from 'lucide-react';
+import { Sparkles, User, Webhook, Edit3, Database } from 'lucide-react';
 import { StyleContext } from '@/context/StyleContext';
 import { ApiService } from '@/lib/api';
 import { JSON_STRUCTURE } from '@/lib/prompt-schemas';
@@ -59,27 +59,17 @@ export const SetupView = () => {
         }
     };
 
-    const handleSendToWebhook = async () => {
-        const url = state.webhookMode === 'test' ? process.env.NEXT_PUBLIC_WEBHOOK_URL_TEST : process.env.NEXT_PUBLIC_WEBHOOK_URL_PROD;
-        // Note: Next.js exposes NEXT_PUBLIC_ vars to browser. If they are secret, we should proxy it via an API route. 
-        // Here we'll just proxy the webhook through our own API if needed, or if it's fine exposing N8N webhook, we keep it NEXT_PUBLIC.
-        // For this context, standard behavior is fetch directly since it was client-side before.
-        if (!url) return dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Webhook URL not configured", type: 'error' } });
-
+    const handleSendToPinecone = async () => {
         setSendingWebhook(true);
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(state.activeStyleJson)
-            });
-            if (response.ok) {
-                dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Sent to ${state.webhookMode.toUpperCase()} successfully!`, type: 'success' } });
-            } else {
-                throw new Error(response.statusText);
-            }
+            const id = `style-${Date.now()}`;
+            const summary = `${state.activeStyleJson.general?.artDirection || ''} ${state.activeStyleJson.general?.mood || ''} ${state.activeStyleJson.outfit?.outfitDetails || ''}`;
+            const textContent = summary.trim() !== '' ? summary : "Extracted Style Configuration";
+
+            await ApiService.addStyleLibrary(id, textContent, state.activeStyleJson);
+            dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Saved to Pinecone Library successfully!`, type: 'success' } });
         } catch (e: any) {
-            dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Webhook Failed: ${e.message}`, type: 'error' } });
+            dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Save Failed: ${e.message}`, type: 'error' } });
         } finally {
             setSendingWebhook(false);
         }
@@ -95,15 +85,28 @@ export const SetupView = () => {
                         <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs">1</div>
                         Assets
                     </h2>
-                    <select
-                        className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500"
-                        value={state.selectedModel}
-                        onChange={(e) => dispatch({ type: 'SET_MODEL', payload: e.target.value })}
-                    >
-                        <option value="nano-banana-pro">Nano Banana Pro</option>
-                        <option value="nano-banana-2">Nano Banana 2 (Default)</option>
-                        <option value="nano-banana">Nano Banana</option>
-                    </select>
+                    <div className="flex items-center gap-2">
+                        <select
+                            className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500"
+                            value={state.aspectRatio}
+                            onChange={(e) => dispatch({ type: 'SET_ASPECT_RATIO', payload: e.target.value })}
+                        >
+                            <option value="1:1">1:1 Square</option>
+                            <option value="9:16">9:16 Vertical</option>
+                            <option value="16:9">16:9 Horizontal</option>
+                            <option value="3:4">3:4 Portrait</option>
+                            <option value="4:3">4:3 Landscape</option>
+                        </select>
+                        <select
+                            className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500"
+                            value={state.selectedModel}
+                            onChange={(e) => dispatch({ type: 'SET_MODEL', payload: e.target.value })}
+                        >
+                            <option value="nano-banana-pro">Nano Banana Pro</option>
+                            <option value="nano-banana-2">Nano Banana 2 (Default)</option>
+                            <option value="nano-banana">Nano Banana</option>
+                        </select>
+                    </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FileUploader
@@ -199,28 +202,15 @@ export const SetupView = () => {
                     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
                         <div className="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
                             <h3 className="font-semibold text-gray-800 flex items-center gap-2"><Edit3 size={16} /> Style Editor</h3>
-                            <div className="flex items-center gap-2">
-                                <select
-                                    value={state.webhookMode}
-                                    onChange={(e) => dispatch({ type: 'SET_WEBHOOK_MODE', payload: e.target.value })}
-                                    className="text-xs bg-gray-100 border-none rounded-lg py-1.5 pl-2 pr-1 text-gray-600 font-medium focus:ring-2 focus:ring-violet-100 cursor-pointer outline-none"
-                                >
-                                    <option value="prod">Prod</option>
-                                    <option value="test">Test</option>
-                                </select>
-                                <button
-                                    onClick={handleSendToWebhook}
-                                    disabled={sendingWebhook}
-                                    className={`text-xs px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 transition-colors ${state.webhookMode === 'test'
-                                        ? 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-                                        : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                                        }`}
-                                    title={`Send JSON to n8n ${state.webhookMode.toUpperCase()}`}
-                                >
-                                    {sendingWebhook ? <Spinner className="w-3 h-3" /> : <Webhook size={12} />}
-                                    Send
-                                </button>
-                            </div>
+                            <button
+                                onClick={handleSendToPinecone}
+                                disabled={sendingWebhook}
+                                className="text-xs px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+                                title="Save to Ana Style Library"
+                            >
+                                {sendingWebhook ? <Spinner className="w-3 h-3" /> : <Database size={12} />}
+                                Save to Library
+                            </button>
                         </div>
                         {Object.keys(state.activeStyleJson).map((group) => (
                             <AccordionGroup

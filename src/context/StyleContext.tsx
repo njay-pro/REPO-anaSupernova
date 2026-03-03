@@ -9,7 +9,7 @@ const initialState = {
     loadingMessage: '',
     selectedModel: 'nano-banana-2',
     chatModel: 'gemini-3-flash-preview',
-    webhookMode: 'prod',
+    aspectRatio: '1:1',
     notification: null,
     subject1: null,
     subject2: null,
@@ -33,7 +33,7 @@ const reducer = (state: any, action: any) => {
         case 'SET_NOTIFICATION': return { ...state, notification: action.payload };
         case 'SET_MODEL': return { ...state, selectedModel: action.payload };
         case 'SET_CHAT_MODEL': return { ...state, chatModel: action.payload };
-        case 'SET_WEBHOOK_MODE': return { ...state, webhookMode: action.payload };
+        case 'SET_ASPECT_RATIO': return { ...state, aspectRatio: action.payload };
         case 'SET_ASSET': return { ...state, [action.key]: action.payload };
         case 'SET_STYLE_JSON': return { ...state, activeStyleJson: action.payload, fullStyleJson: action.full || state.fullStyleJson };
         case 'UPDATE_STYLE_PARAM': {

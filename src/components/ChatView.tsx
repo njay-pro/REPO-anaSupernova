@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { Send, MessageSquare, Cpu, Database, Edit3, Play, Library, Terminal, BrainCircuit } from 'lucide-react';
+import { Send, MessageSquare, Cpu, Database, Edit3, Play, Library, Terminal, BrainCircuit, Image as ImageIcon, X } from 'lucide-react';
 import { StyleContext } from '@/context/StyleContext';
 import { ApiService } from '@/lib/api';
 import { MarkdownRenderer } from '@/components/ui/MarkdownRenderer';
@@ -16,9 +16,13 @@ const ToolMessage = ({ toolName, result }: { toolName: string, result: string })
                         <Play size={14} className="text-pink-500 shrink-0" /> :
                         toolName === 'get_description' ?
                             <Database size={14} className="text-orange-500 shrink-0" /> :
-                            toolName === 'thinking' ?
-                                <BrainCircuit size={14} className="text-amber-500 shrink-0" /> :
-                                <Terminal size={14} className="text-blue-500 shrink-0" />
+                            toolName === 'add_style_library' ?
+                                <Database size={14} className="text-indigo-500 shrink-0" /> :
+                                toolName === 'delete_style_library' ?
+                                    <Database size={14} className="text-red-500 shrink-0" /> :
+                                    toolName === 'thinking' ?
+                                        <BrainCircuit size={14} className="text-amber-500 shrink-0" /> :
+                                        <Terminal size={14} className="text-blue-500 shrink-0" />
             }
             <span className="font-semibold text-gray-700 whitespace-nowrap">{toolName === 'thinking' ? 'Reasoning' : toolName}</span>
             <span className="text-gray-300">|</span>
@@ -30,11 +34,26 @@ const ToolMessage = ({ toolName, result }: { toolName: string, result: string })
 export const ChatView = () => {
     const { state, dispatch } = useContext(StyleContext);
     const [input, setInput] = useState('');
-    const [filteredCommands, setFilteredCommands] = useState<any[]>([]);
+    const [filteredCommands, setFilteredCommands] = useState<{ cmd: string, desc: string }[]>([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
+    const [attachedImage, setAttachedImage] = useState<string | null>(null);
+    const fileInput = useRef<HTMLInputElement>(null);
+
+    const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (r) => {
+                if (typeof r.target?.result === 'string') {
+                    setAttachedImage(r.target.result.split(',')[1]);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const SLASH_COMMANDS = [
         { cmd: '/outfit', text: "Let's alternate the outfit", desc: "Alternate outfit" },
@@ -95,15 +114,20 @@ export const ChatView = () => {
             case 'get_description':
                 return { message: JSON.stringify(stateRef.current.activeStyleJson) };
             case 'edit_description': {
-                const currentJson = { ...stateRef.current.activeStyleJson };
-                const merge = (target: any, source: any) => {
+                const currentJson = JSON.parse(JSON.stringify(stateRef.current.activeStyleJson));
+                const deepMerge = (target: any, source: any) => {
                     for (const key in source) {
-                        if (source[key] instanceof Object && key in target) Object.assign(source[key], merge(target[key], source[key]));
+                        if (source[key] !== null && typeof source[key] === 'object' &&
+                            target[key] !== null && typeof target[key] === 'object' &&
+                            !Array.isArray(source[key])) {
+                            deepMerge(target[key], source[key]);
+                        } else {
+                            target[key] = source[key];
+                        }
                     }
-                    Object.assign(target || {}, source);
                     return target;
                 };
-                merge(currentJson, args);
+                deepMerge(currentJson, args);
                 // Immediately update local ref to ensure parallel tools in same loop see this update
                 stateRef.current = { ...stateRef.current, activeStyleJson: currentJson };
                 dispatch({ type: 'SET_STYLE_JSON', payload: currentJson });
@@ -112,11 +136,25 @@ export const ChatView = () => {
             case 'ana_style_library':
                 try {
                     const results = await ApiService.searchPinecone(args.query);
-                    const matches = results.matches?.map((m: any) => m.metadata).filter(Boolean) || [];
+                    const matches = results.matches?.map((m: any) => ({ id: m.id, ...m.metadata })).filter(Boolean) || [];
                     if (matches.length === 0) return { message: "No matches found in library." };
                     return { message: `Found styles: ${JSON.stringify(matches.slice(0, 2))}` };
                 } catch (e: any) {
                     return { message: `Error searching library: ${e.message}` };
+                }
+            case 'add_style_library':
+                try {
+                    await ApiService.addStyleLibrary(args.id, args.text_content, args.metadata);
+                    return { message: `Style saved successfully with ID: ${args.id}` };
+                } catch (e: any) {
+                    return { message: `Error saving style: ${e.message}` };
+                }
+            case 'delete_style_library':
+                try {
+                    const result = await ApiService.deleteStyleLibrary({ ids: args.id ? [args.id] : undefined, query: args.query });
+                    return { message: `Successfully deleted matching styles: ${JSON.stringify(result.deletedIds || [])}` };
+                } catch (e: any) {
+                    return { message: `Error deleting style: ${e.message}` };
                 }
             case 'generate_image':
                 if (stateRef.current.generateFn) {
@@ -130,20 +168,30 @@ export const ChatView = () => {
     };
 
     const handleSend = async () => {
-        if (!input.trim()) return;
+        if (!input.trim() && !attachedImage) return;
         const userMsg = input;
+        const img = attachedImage;
         setInput('');
+        setAttachedImage(null);
         setFilteredCommands([]);
-        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'user', text: userMsg } });
+        dispatch({ type: 'ADD_MESSAGE', payload: { role: 'user', text: userMsg, image: img } });
         setIsTyping(true);
 
         const history = stateRef.current.messages.map((m: any) => {
             const part: any = { text: m.text };
+            const parts = [part];
+            if (m.image) {
+                parts.push({ inlineData: { mimeType: 'image/jpeg', data: m.image } });
+            }
             if (m.thoughtSignature) part.thoughtSignature = m.thoughtSignature;
-            return { role: m.role === 'assistant' ? 'model' : 'user', parts: [part] };
+            return { role: m.role === 'assistant' ? 'model' : 'user', parts };
         });
 
-        history.push({ role: 'user', parts: [{ text: userMsg }] });
+        const newParts: any[] = [{ text: userMsg }];
+        if (img) {
+            newParts.push({ inlineData: { mimeType: 'image/jpeg', data: img } });
+        }
+        history.push({ role: 'user', parts: newParts });
 
         let turns = 0;
         const MAX_TURNS = 30;
@@ -261,6 +309,9 @@ export const ChatView = () => {
                         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm ${msg.role === 'user' ? 'bg-violet-600 text-white rounded-br-sm' : 'bg-white text-gray-800 border border-gray-200 rounded-bl-sm'
                                 }`}>
+                                {msg.image && (
+                                    <img src={`data:image/jpeg;base64,${msg.image}`} className="w-full max-w-sm rounded-lg mb-2 shadow-sm" alt="User upload" />
+                                )}
                                 <MarkdownRenderer text={msg.text} />
                             </div>
                         </div>
@@ -299,9 +350,19 @@ export const ChatView = () => {
                         </div>
                     )}
                     <div className="relative flex items-center gap-2 bg-white rounded-full shadow-2xl shadow-violet-900/10 border border-gray-100 p-1.5 transition-transform focus-within:scale-[1.01]">
-                        <div className="pl-4 pr-2 text-gray-400">
-                            <MessageSquare size={20} />
-                        </div>
+                        {attachedImage ? (
+                            <div className="relative w-8 h-8 rounded shrink-0 overflow-hidden bg-gray-100 border border-gray-200 ml-2 group">
+                                <img src={`data:image/jpeg;base64,${attachedImage}`} className="w-full h-full object-cover" alt="attachment" />
+                                <button onClick={() => setAttachedImage(null)} className="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center text-white transition-all">
+                                    <X size={14} />
+                                </button>
+                            </div>
+                        ) : (
+                            <button onClick={() => fileInput.current?.click()} className="p-2 text-gray-400 hover:text-violet-600 transition-colors shrink-0 ml-1 rounded-full hover:bg-gray-100">
+                                <ImageIcon size={20} />
+                                <input ref={fileInput} type="file" accept="image/*" className="hidden" onChange={handleFile} />
+                            </button>
+                        )}
                         <input
                             id="chat-input"
                             type="text"
@@ -314,7 +375,7 @@ export const ChatView = () => {
                         />
                         <button
                             onClick={handleSend}
-                            disabled={!input.trim()}
+                            disabled={!input.trim() && !attachedImage}
                             className="p-2.5 bg-violet-600 text-white rounded-full hover:bg-violet-700 disabled:bg-gray-200 disabled:text-gray-400 transition-all shadow-md transform active:scale-95"
                         >
                             <Send size={18} fill="currentColor" />

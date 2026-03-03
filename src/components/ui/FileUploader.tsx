@@ -15,6 +15,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
     label, image, onUpload, onClear, onAction, actionIcon: ActionIcon, actionTitle
 }) => {
     const fileInput = useRef<HTMLInputElement>(null);
+    const [isDragging, setIsDragging] = React.useState(false);
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -27,8 +28,49 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
             reader.readAsDataURL(file);
         }
     };
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (r) => {
+                if (typeof r.target?.result === 'string') {
+                    onUpload(r.target.result.split(',')[1]);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     return (
-        <div className="relative h-48 bg-gray-50 border border-gray-200 rounded-xl overflow-hidden hover:border-violet-400 hover:bg-violet-50/30 transition-all group">
+        <div
+            className={`relative h-48 border rounded-xl overflow-hidden transition-all group ${isDragging ? 'border-violet-500 bg-violet-100/50 scale-[1.02]' : 'bg-gray-50 border-gray-200 hover:border-violet-400 hover:bg-violet-50/30'
+                }`}
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+        >
             {image ? (
                 <>
                     <img src={`data:image/png;base64,${image}`} alt="Preview" className="w-full h-full object-contain p-2" />

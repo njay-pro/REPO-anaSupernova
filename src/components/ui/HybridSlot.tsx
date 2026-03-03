@@ -23,6 +23,7 @@ export const HybridSlot: React.FC<HybridSlotProps> = ({
     type, image, onUpload, onClear, onExtract, isLoading, isChecked, onToggle, hasJson, onExtractJson
 }) => {
     const [isCropping, setIsCropping] = React.useState(false);
+    const [isDragging, setIsDragging] = React.useState(false);
     const fileInput = useRef<HTMLInputElement>(null);
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -36,8 +37,49 @@ export const HybridSlot: React.FC<HybridSlotProps> = ({
             reader.readAsDataURL(file);
         }
     };
+
+    const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+        const file = e.dataTransfer.files?.[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (r) => {
+                if (typeof r.target?.result === 'string') {
+                    onUpload(r.target.result.split(',')[1]);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    };
     return (
-        <div className="relative h-48 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm group">
+        <div
+            className={`relative h-48 border rounded-xl overflow-hidden shadow-sm group transition-all ${isDragging ? 'border-violet-500 bg-violet-100/50 scale-[1.02]' : 'bg-white border-gray-200'
+                }`}
+            onDragEnter={handleDragEnter}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+        >
             {isLoading ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50/50">
                     <Spinner className="w-8 h-8 text-violet-600" />

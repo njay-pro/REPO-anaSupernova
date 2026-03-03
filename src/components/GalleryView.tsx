@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useContext } from 'react';
-import { Image as ImageIcon, RefreshCw, Edit3, Webhook, Download, X, MessageSquare } from 'lucide-react';
+import { Image as ImageIcon, RefreshCw, Edit3, Database, Download, X, MessageSquare } from 'lucide-react';
 import { StyleContext } from '@/context/StyleContext';
+import { ApiService } from '@/lib/api';
 import { Spinner } from '@/components/ui/Spinner';
 
 export const GalleryView = () => {
@@ -35,25 +36,19 @@ export const GalleryView = () => {
         });
     };
 
-    const handleSendCardToWebhook = async (item: any) => {
+    const handleSendCardToPinecone = async (item: any) => {
         if (!item.json) return;
-        const url = state.webhookMode === 'test' ? process.env.NEXT_PUBLIC_WEBHOOK_URL_TEST : process.env.NEXT_PUBLIC_WEBHOOK_URL_PROD;
-        if (!url) return dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Webhook URL not configured", type: 'error' } });
         setSendingCardId(item.id);
         try {
             const jsonData = JSON.parse(item.json);
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(jsonData)
-            });
-            if (response.ok) {
-                dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Card sent to ${state.webhookMode.toUpperCase()} successfully!`, type: 'success' } });
-            } else {
-                throw new Error(response.statusText);
-            }
+            const id = `style-${Date.now()}`;
+            const summary = `${jsonData.general?.artDirection || ''} ${jsonData.general?.mood || ''} ${jsonData.outfit?.outfitDetails || ''}`;
+            const textContent = summary.trim() !== '' ? summary : "Gallery Generated Style";
+
+            await ApiService.addStyleLibrary(id, textContent, jsonData);
+            dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Saved Gallery style to Library successfully!`, type: 'success' } });
         } catch (e: any) {
-            dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Webhook Failed: ${e.message}`, type: 'error' } });
+            dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Save Failed: ${e.message}`, type: 'error' } });
         } finally {
             setSendingCardId(null);
         }
@@ -86,12 +81,12 @@ export const GalleryView = () => {
                                     <button onClick={() => handleReference(item)} className="p-2 bg-black/60 text-white rounded-full hover:bg-black/80" title="Use as Reference"><RefreshCw size={16} /></button>
                                     <button onClick={() => handleEdit(item)} className="p-2 bg-black/60 text-white rounded-full hover:bg-black/80" title="Edit"><Edit3 size={16} /></button>
                                     <button
-                                        onClick={() => handleSendCardToWebhook(item)}
+                                        onClick={() => handleSendCardToPinecone(item)}
                                         disabled={sendingCardId === item.id}
                                         className={`p-2 bg-black/60 text-white rounded-full hover:bg-black/80 ${sendingCardId === item.id ? 'opacity-70 cursor-not-allowed' : ''}`}
-                                        title={`Send JSON to ${state.webhookMode.toUpperCase()}`}
+                                        title={`Save to Library`}
                                     >
-                                        {sendingCardId === item.id ? <Spinner className="w-4 h-4 text-white" /> : <Webhook size={16} />}
+                                        {sendingCardId === item.id ? <Spinner className="w-4 h-4 text-white" /> : <Database size={16} />}
                                     </button>
                                     <a href={`data:image/png;base64,${item.image}`} download={`gen-${item.id}.png`} className="p-2 bg-black/60 text-white rounded-full hover:bg-black/80"><Download size={16} /></a>
                                     <button onClick={() => handleRemove(item.id)} className="p-2 bg-red-600/80 text-white rounded-full hover:bg-red-700" title="Remove"><X size={16} /></button>

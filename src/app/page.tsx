@@ -47,7 +47,8 @@ const AppContent = () => {
 
       const res = await ApiService.generateCall('', images, currentState.selectedModel, {
         promptKey: 'generate-image',
-        params: { activeStyleJson: currentState.activeStyleJson }
+        params: { activeStyleJson: currentState.activeStyleJson },
+        aspectRatio: currentState.aspectRatio
       });
       const candidate = res.candidates?.[0];
       const data = candidate?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;

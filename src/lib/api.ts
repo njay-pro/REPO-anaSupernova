@@ -9,7 +9,8 @@ export const ApiService = {
                     images,
                     model,
                     promptKey: options.promptKey,
-                    params: options.params
+                    params: options.params,
+                    aspectRatio: options.aspectRatio
                 };
                 const response = await fetch('/api/generate', {
                     method: 'POST',
@@ -61,6 +62,36 @@ export const ApiService = {
             return await response.json();
         } catch (e) {
             console.error("RAG Error:", e);
+            throw e;
+        }
+    },
+
+    async addStyleLibrary(id: string, textContent: string, metadata: any) {
+        try {
+            const response = await fetch('/api/pinecone/upsert', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, textContent, metadata })
+            });
+            if (!response.ok) throw new Error(`Add Style Library Error: ${response.statusText}`);
+            return await response.json();
+        } catch (e) {
+            console.error("Vector Add Error:", e);
+            throw e;
+        }
+    },
+
+    async deleteStyleLibrary({ ids, query }: { ids?: string[], query?: string }) {
+        try {
+            const response = await fetch('/api/pinecone/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ids, query })
+            });
+            if (!response.ok) throw new Error(`Delete Style Library Error: ${response.statusText}`);
+            return await response.json();
+        } catch (e) {
+            console.error("Vector Delete Error:", e);
             throw e;
         }
     },

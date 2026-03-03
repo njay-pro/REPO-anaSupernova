@@ -35,6 +35,30 @@ export const TOOLS_SCHEMA = [
                 name: "generate_image",
                 description: "Triggers the image generation process immediately using the current style settings.",
                 parameters: { type: "OBJECT", properties: {} }
+            },
+            {
+                name: "add_style_library",
+                description: "Save a style to the Ana Style Library database. Use this to permanently record a good style for future use. IMPORTANT: Ensure 'id' is a URL safe slug.",
+                parameters: {
+                    type: "OBJECT",
+                    properties: {
+                        id: { type: "STRING", description: "A unique, URL-safe slug ID for the style (e.g., 'neon-cyberpunk-v1')." },
+                        text_content: { type: "STRING", description: "A descriptive text summary of the style used for vector search matching (e.g., 'A vibrant neon cyberpunk look with glowing outlines...')." },
+                        metadata: { type: "OBJECT", description: "The full JSON description object of the style matching the exact JSON_STRUCTURE format." }
+                    },
+                    required: ["id", "text_content", "metadata"]
+                }
+            },
+            {
+                name: "delete_style_library",
+                description: "Delete styles from the Ana Style Library database. If you want to delete a specific style you found, pass its 'id'. If you want to delete styles matching a concept (e.g., 'delete all neon styles'), pass a 'query' string to semantically search and bulk delete matches.",
+                parameters: {
+                    type: "OBJECT",
+                    properties: {
+                        id: { type: "STRING", description: "The ID of a specific style to delete." },
+                        query: { type: "STRING", description: "A semantic search query to find and delete matching styles (e.g. 'neon')." }
+                    }
+                }
             }
         ]
     }

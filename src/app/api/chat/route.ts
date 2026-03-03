@@ -16,7 +16,7 @@ export async function POST(request: Request) {
         let actualModel = model;
         if (!actualModel || actualModel === 'gemini-3-flash' || actualModel.includes('2.5')) actualModel = 'gemini-3-flash-preview';
 
-        let url = `${baseUrl}${actualModel}:generateContent?key=${currentKey}`;
+        const url = `${baseUrl}${actualModel}:generateContent?key=${currentKey}`;
 
         const dynamicSystemPrompt = getPrompt('chat');
 
