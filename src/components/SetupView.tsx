@@ -142,7 +142,6 @@ export const SetupView = () => {
                     image={state.reference}
                     onUpload={(d) => {
                         dispatch({ type: 'SET_ASSET', key: 'reference', payload: d });
-                        dispatch({ type: 'SET_STYLE_JSON', payload: {} });
                     }}
                     onClear={() => dispatch({ type: 'SET_ASSET', key: 'reference', payload: null })}
                 />

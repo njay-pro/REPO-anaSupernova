@@ -38,13 +38,13 @@ export const TOOLS_SCHEMA = [
             },
             {
                 name: "generate_carousel",
-                description: "Generates a cohesive 5-slide carousel by sending a batch of style variants based on a narrative or theme. Used for creating 'Day in the Life' sequences or photo dumps. The user MUST ask for a carousel or batch.",
+                description: "Generates a cohesive multi-slide carousel or batch by sending a sequence of style variants based on a narrative or theme. Used for creating 'Day in the Life' sequences or photo dumps. Typically 3-6 slides, but supports any number.",
                 parameters: {
                     type: "OBJECT",
                     properties: {
                         variants: {
                             type: "ARRAY",
-                            description: "An array of 5 style objects. Each object should just contain the fields that vary for that specific slide (e.g. pose, photography) while keeping the core vibe consistent.",
+                            description: "An array of style objects for the batch. Each object should contain the fields that vary for that specific slide (e.g. pose, photography) while keeping the core vibe consistent.",
                             items: {
                                 type: "OBJECT",
                                 properties: {
