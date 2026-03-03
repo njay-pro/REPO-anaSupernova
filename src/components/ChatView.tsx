@@ -65,6 +65,7 @@ export const ChatView = () => {
         { cmd: '/angle', text: "Let's change the camera angle", desc: "Change angle" },
         { cmd: '/expression', text: "Let's change the facial expression", desc: "Change expression" },
         { cmd: '/search', text: "Search Ana's Library for ", desc: "Search Pinecone DB" },
+        { cmd: '/carousel', text: "Generate a cohesive 5-slide carousel from current base", desc: "Batch Generate Carousel" },
         { cmd: '/generate', text: "Go ahead and generate the image", desc: "Trigger Generation" }
     ];
 
@@ -161,6 +162,15 @@ export const ChatView = () => {
                     // Pass the latest activeStyleJson explicitly to override any stale closures in generateFn
                     stateRef.current.generateFn({ activeStyleJson: stateRef.current.activeStyleJson });
                     return { message: "Image generation triggered." };
+                }
+                return { message: "Error: Generation function not registered." };
+            case 'generate_carousel':
+                if (stateRef.current.generateFn) {
+                    if (!args.variants || !Array.isArray(args.variants)) {
+                        return { message: "Error: No variants array provided." };
+                    }
+                    stateRef.current.generateFn({ batchVariants: args.variants });
+                    return { message: "Carousel batch generation triggered." };
                 }
                 return { message: "Error: Generation function not registered." };
             default: return { message: "Error: Unknown tool." };

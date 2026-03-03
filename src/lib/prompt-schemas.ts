@@ -37,6 +37,30 @@ export const TOOLS_SCHEMA = [
                 parameters: { type: "OBJECT", properties: {} }
             },
             {
+                name: "generate_carousel",
+                description: "Generates a cohesive 5-slide carousel by sending a batch of style variants based on a narrative or theme. Used for creating 'Day in the Life' sequences or photo dumps. The user MUST ask for a carousel or batch.",
+                parameters: {
+                    type: "OBJECT",
+                    properties: {
+                        variants: {
+                            type: "ARRAY",
+                            description: "An array of 5 style objects. Each object should just contain the fields that vary for that specific slide (e.g. pose, photography) while keeping the core vibe consistent.",
+                            items: {
+                                type: "OBJECT",
+                                properties: {
+                                    general: { type: "OBJECT" },
+                                    outfit: { type: "OBJECT" },
+                                    pose: { type: "OBJECT" },
+                                    background: { type: "OBJECT" },
+                                    photography: { type: "OBJECT" }
+                                }
+                            }
+                        }
+                    },
+                    required: ["variants"]
+                }
+            },
+            {
                 name: "add_style_library",
                 description: "Save a style to the Ana Style Library database. Use this to permanently record a good style for future use. IMPORTANT: Ensure 'id' is a URL safe slug.",
                 parameters: {

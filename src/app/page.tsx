@@ -14,65 +14,87 @@ const AppContent = () => {
   const { state, dispatch } = useContext(StyleContext);
 
   const handleGenerate = async (overrides: any = {}) => {
-    // Merge current state with overrides (important for concurrent tool calls)
-    const currentState = { ...state, ...overrides };
+    // Generate an array of target states so we can process one or many
+    const targetStates: any[] = [];
 
-    if (!currentState.subject1 || Object.keys(currentState.activeStyleJson).length === 0) {
+    if (overrides.batchVariants && Array.isArray(overrides.batchVariants)) {
+      overrides.batchVariants.forEach((v: any) => {
+        // We use a deep merge here similar to the edit tool to safely build the variants
+        const mergedJson = JSON.parse(JSON.stringify(state.activeStyleJson));
+        for (const key in v) {
+          if (v[key] !== null && typeof v[key] === 'object' && mergedJson[key] !== null && typeof mergedJson[key] === 'object' && !Array.isArray(v[key])) {
+            Object.assign(mergedJson[key], v[key]);
+          } else {
+            mergedJson[key] = v[key];
+          }
+        }
+        targetStates.push({ ...state, activeStyleJson: mergedJson });
+      });
+    } else {
+      targetStates.push({ ...state, ...overrides });
+    }
+
+    if (!targetStates[0] || !targetStates[0].subject1 || Object.keys(targetStates[0].activeStyleJson).length === 0) {
       dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Missing Subject or Style Description", type: 'error' } });
       return;
     }
 
     dispatch({ type: 'SET_VIEW', payload: 'gallery' });
 
-    const tempId = typeof crypto !== 'undefined' ? crypto.randomUUID() : (Date.now() + Math.random()).toString(); // Bulletproof ID for parallel batch calls
-    dispatch({
-      type: 'ADD_GALLERY_ITEM',
-      payload: {
-        id: tempId,
-        status: 'loading',
-        image: null,
-        json: JSON.stringify(currentState.activeStyleJson),
-        sub1: currentState.subject1,
-        sub2: currentState.subject2,
-        type: 'generated',
-        model: currentState.selectedModel
-      }
-    });
+    // Kick off all generations in parallel
+    await Promise.all(targetStates.map(async (currentState) => {
+      const tempId = typeof crypto !== 'undefined' ? crypto.randomUUID() : (Date.now() + Math.random()).toString();
 
-    try {
-      const images = [currentState.subject1];
-      if (currentState.subject2) images.push(currentState.subject2);
-      if (currentState.useExtractedBg && currentState.extractedBg) images.push(currentState.extractedBg);
-      if (currentState.useExtractedOutfit && currentState.extractedOutfit) images.push(currentState.extractedOutfit);
-
-      const res = await ApiService.generateCall('', images, currentState.selectedModel, {
-        promptKey: 'generate-image',
-        params: { activeStyleJson: currentState.activeStyleJson },
-        aspectRatio: currentState.aspectRatio
+      dispatch({
+        type: 'ADD_GALLERY_ITEM',
+        payload: {
+          id: tempId,
+          status: 'loading',
+          image: null,
+          json: JSON.stringify(currentState.activeStyleJson),
+          sub1: currentState.subject1,
+          sub2: currentState.subject2,
+          type: 'generated',
+          model: currentState.selectedModel
+        }
       });
-      const candidate = res.candidates?.[0];
-      const data = candidate?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
-      const thoughtPart = candidate?.content?.parts?.find((p: any) => p.thoughtSignature || p.thought_signature);
-      const signature = thoughtPart ? (thoughtPart.thoughtSignature || thoughtPart.thought_signature) : null;
 
-      if (data) {
-        dispatch({
-          type: 'UPDATE_GALLERY_ITEM',
-          payload: {
-            id: tempId,
-            image: data,
-            thoughtSignature: signature,
-            status: 'complete'
-          }
+      try {
+        const images = [currentState.subject1];
+        if (currentState.subject2) images.push(currentState.subject2);
+        if (currentState.useExtractedBg && currentState.extractedBg) images.push(currentState.extractedBg);
+        if (currentState.useExtractedOutfit && currentState.extractedOutfit) images.push(currentState.extractedOutfit);
+
+        const res = await ApiService.generateCall('', images, currentState.selectedModel, {
+          promptKey: 'generate-image',
+          params: { activeStyleJson: currentState.activeStyleJson },
+          aspectRatio: currentState.aspectRatio
         });
-        dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Masterpiece Generated!", type: 'success' } });
-      } else {
-        throw new Error("No image data returned");
+        const candidate = res.candidates?.[0];
+        const data = candidate?.content?.parts?.find((p: any) => p.inlineData)?.inlineData?.data;
+        const thoughtPart = candidate?.content?.parts?.find((p: any) => p.thoughtSignature || p.thought_signature);
+        const signature = thoughtPart ? (thoughtPart.thoughtSignature || thoughtPart.thought_signature) : null;
+
+        if (data) {
+          dispatch({
+            type: 'UPDATE_GALLERY_ITEM',
+            payload: {
+              id: tempId,
+              image: data,
+              thoughtSignature: signature,
+              status: 'complete'
+            }
+          });
+        } else {
+          throw new Error("No image data returned");
+        }
+      } catch (e: any) {
+        dispatch({ type: 'REMOVE_GALLERY_ITEM', payload: tempId });
+        dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Generation failed: ${e.message}`, type: 'error' } });
       }
-    } catch (e: any) {
-      dispatch({ type: 'REMOVE_GALLERY_ITEM', payload: tempId });
-      dispatch({ type: 'SET_NOTIFICATION', payload: { message: `Generation failed: ${e.message}`, type: 'error' } });
-    }
+    }));
+
+    dispatch({ type: 'SET_NOTIFICATION', payload: { message: targetStates.length > 1 ? "Carousel Batch Generated!" : "Masterpiece Generated!", type: 'success' } });
   };
 
   // Expose handleGenerate to the context or a shared ref if needed, 
