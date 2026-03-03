@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useContext } from 'react';
-import { Image as ImageIcon, RefreshCw, Edit3, Database, Download, X, MessageSquare } from 'lucide-react';
+import { Image as ImageIcon, RefreshCw, Edit3, Database, Download, X, MessageSquare, Film } from 'lucide-react';
 import { StyleContext } from '@/context/StyleContext';
 import { ApiService } from '@/lib/api';
 import { Spinner } from '@/components/ui/Spinner';
@@ -54,6 +54,50 @@ export const GalleryView = () => {
         }
     };
 
+    const handleCreateVideo = async (item: any) => {
+        const videoId = `video-${Date.now()}`;
+        const jsonData = JSON.parse(item.json);
+        const prompt = `${jsonData.general?.artDirection || ''} ${jsonData.general?.mood || ''} ${jsonData.outfit?.outfitDetails || ''}`.trim() || "A cinematic scene.";
+
+        // Optimistically add to cinema
+        dispatch({
+            type: 'ADD_VIDEO',
+            payload: {
+                id: videoId,
+                status: 'loading',
+                poster: item.image,
+                prompt: prompt,
+                aspectRatio: state.aspectRatio
+            }
+        });
+
+        dispatch({ type: 'SET_NOTIFICATION', payload: { message: "Video generation started! Check the Cinema tab.", type: 'success' } });
+
+        try {
+            const res = await ApiService.startVideoGeneration(item.image, prompt, state.aspectRatio);
+            if (res.name) {
+                dispatch({
+                    type: 'UPDATE_VIDEO',
+                    payload: {
+                        id: videoId,
+                        operationName: res.name
+                    }
+                });
+            } else {
+                throw new Error("No operation name returned from Video API.");
+            }
+        } catch (e: any) {
+            dispatch({
+                type: 'UPDATE_VIDEO',
+                payload: {
+                    id: videoId,
+                    status: 'failed',
+                    error: e.message
+                }
+            });
+        }
+    };
+
     if (state.gallery.length === 0) {
         return (
             <div className="h-full flex flex-col items-center justify-center text-gray-400 p-8">
@@ -92,6 +136,7 @@ export const GalleryView = () => {
                                 <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button onClick={() => handleReference(item)} className="p-2 bg-black/60 text-white rounded-full hover:bg-black/80" title="Use as Reference"><RefreshCw size={16} /></button>
                                     <button onClick={() => handleEdit(item)} className="p-2 bg-black/60 text-white rounded-full hover:bg-black/80" title="Edit"><Edit3 size={16} /></button>
+                                    <button onClick={() => handleCreateVideo(item)} className="p-2 bg-violet-600/90 text-white rounded-full hover:bg-violet-700" title="Generate Cinematic Video"><Film size={16} /></button>
                                     <button
                                         onClick={() => handleSendCardToPinecone(item)}
                                         disabled={sendingCardId === item.id}

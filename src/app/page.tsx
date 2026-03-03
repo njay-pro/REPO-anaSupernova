@@ -4,6 +4,7 @@ import { Settings, MessageSquare, Layers, Play } from 'lucide-react';
 import { StyleProvider, StyleContext } from '@/context/StyleContext';
 import { SetupView } from '@/components/SetupView';
 import { GalleryView } from '@/components/GalleryView';
+import { CinemaView } from '@/components/CinemaView';
 import { ChatView } from '@/components/ChatView';
 import { EditModal } from '@/components/ui/EditModal';
 import { GlobalToast } from '@/components/ui/GlobalToast';
@@ -134,6 +135,9 @@ const AppContent = () => {
         <div className={`h-full overflow-y-auto ${state.view === 'gallery' ? 'block' : 'hidden'}`}>
           <GalleryView />
         </div>
+        <div className={`h-full overflow-y-auto ${state.view === 'cinema' ? 'block' : 'hidden'}`}>
+          <CinemaView />
+        </div>
         <div className={`h-full ${state.view === 'chat' ? 'block' : 'hidden'}`}>
           <ChatView />
         </div>
@@ -154,7 +158,7 @@ const AppContent = () => {
           </button>
         </div>
       )}
-      <nav className="h-[60px] bg-white border-t border-gray-200 grid grid-cols-3 z-30 shrink-0 mt-auto">
+      <nav className="h-[60px] bg-white border-t border-gray-200 grid grid-cols-4 z-30 shrink-0 mt-auto">
         <button onClick={() => dispatch({ type: 'SET_VIEW', payload: 'setup' })} className={`flex flex-col items-center justify-center gap-1 ${state.view === 'setup' ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'}`}>
           <Settings size={20} />
           <span className="text-[10px] font-medium">Setup</span>
@@ -167,6 +171,11 @@ const AppContent = () => {
           <Layers size={20} />
           <span className="text-[10px] font-medium">Gallery</span>
           {state.gallery.length > 0 && <span className="absolute top-2 right-8 w-2 h-2 bg-red-500 rounded-full" />}
+        </button>
+        <button onClick={() => dispatch({ type: 'SET_VIEW', payload: 'cinema' })} className={`flex flex-col items-center justify-center gap-1 relative ${state.view === 'cinema' ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'}`}>
+          <Play size={20} />
+          <span className="text-[10px] font-medium">Cinema</span>
+          {(state.videos?.length || 0) > 0 && <span className="absolute top-2 right-8 w-2 h-2 bg-violet-500 rounded-full" />}
         </button>
       </nav>
       <EditModal />

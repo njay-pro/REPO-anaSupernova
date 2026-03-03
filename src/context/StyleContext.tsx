@@ -21,6 +21,7 @@ const initialState = {
     fullStyleJson: {},
     activeStyleJson: {},
     gallery: [],
+    videos: [],
     messages: [{ role: 'assistant', text: "Hi! I'm your Agentic Style Assistant. I can plan, research the library, and edit styles for you.", isHidden: false }],
     editModal: { isOpen: false, baseImage: null, context: null },
     generateFn: null
@@ -51,6 +52,15 @@ const reducer = (state: any, action: any) => {
                 )
             };
         case 'REMOVE_GALLERY_ITEM': return { ...state, gallery: state.gallery.filter((item: any) => item.id !== action.payload) };
+        case 'ADD_VIDEO': return { ...state, videos: [action.payload, ...state.videos] };
+        case 'UPDATE_VIDEO':
+            return {
+                ...state,
+                videos: state.videos.map((v: any) =>
+                    v.id === action.payload.id ? { ...v, ...action.payload } : v
+                )
+            };
+        case 'REMOVE_VIDEO': return { ...state, videos: state.videos.filter((v: any) => v.id !== action.payload) };
         case 'ADD_MESSAGE': return { ...state, messages: [...state.messages, action.payload] };
         case 'SET_MODAL': return { ...state, editModal: action.payload };
         case 'REGISTER_GENERATE': return { ...state, generateFn: action.payload };

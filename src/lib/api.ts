@@ -96,5 +96,27 @@ export const ApiService = {
         }
     },
 
+    async startVideoGeneration(image: string, prompt: string, aspectRatio?: string) {
+        const response = await fetch('/api/video', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ image, prompt, aspectRatio })
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Start Video Error: ${response.status} - ${errorText}`);
+        }
+        return await response.json();
+    },
+
+    async checkVideoStatus(operationName: string) {
+        const response = await fetch(`/api/video?name=${operationName}`);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Check Video Error: ${response.status} - ${errorText}`);
+        }
+        return await response.json();
+    },
+
     extractJson
 };
