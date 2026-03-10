@@ -5,7 +5,7 @@
 ## 🚀 1. Project Overview & Identity
 - **Project Name:** Ana Supernova (ana-style-transfer-machine)
 - **Primary Goal:** A Next.js web application functioning as an AI-driven chat and an Image Style Transfer Generator.
-- **Role of the App:** It has conversational elements powered by LLMs, a RAG system for specific knowledge, and an external webhook trigger for generating images/styles.
+- **Role of the App:** It has conversational elements powered by LLMs, a RAG system for specific knowledge, and a native Image Generation engine powered by Gemini models.
 
 ## 🛠️ 2. Technology Stack
 - **Framework:** Next.js `16.1.6` (App Router `src/app/`)
@@ -16,7 +16,7 @@
 ## 🧠 3. Critical Architecture & Security Rules
 1. **Strict Client/Server Separation:** 
    - Never expose API keys (`API_KEY`, `PINECONE_...`) to frontend `src/components` or `src/lib/api.ts`.
-   - ALL interactions with external services (Gemini, Pinecone, Webhooks) must go through Next.js API Routes (`src/app/api/...`).
+   - ALL interactions with external services (Gemini, Pinecone) must go through Next.js API Routes (`src/app/api/...`).
 2. **API Service Layer (`src/lib/api.ts`):**
    - The frontend uses `ApiService` (`chatCall`, `generateCall`, `searchPinecone`) to interact with our backend relative routes. Keep frontend functions clean and purely delegated to the backend APIs.
 
@@ -36,16 +36,13 @@
   2. Call Pinecone `/query` endpoint.
   3. Return Top K matches with metadata included.
 
-### C. n8n Webhooks (Image Generation)
-- **Webhook Host:** `n8n.njay.pro`.
-- **Purpose:** `/api/generate` hits this webhook to kick off style transfers/image processing workloads.
 
 ## 📁 5. Folder Structure Summary
 - `src/app/`
   - `page.tsx`, `layout.tsx` (Client / UI App entry point)
   - `api/chat/route.ts` (Handles LLM Chat Logic)
   - `api/search/route.ts` (Handles RAG/Pinecone search logic)
-  - `api/generate/route.ts` (Handles Webhook call for Image Gen)
+  - `api/generate/route.ts` (Handles native Gemini image generation)
 - `src/components/` (React UI components and Chat interfaces)
 - `src/lib/` (Utilities and Frontend-to-Backend `api.ts` connectors)
 - `src/prompts/` (Internal markdown / prompts used by the app's internal agents)
