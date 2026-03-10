@@ -85,28 +85,6 @@ export const SetupView = () => {
                         <div className="w-6 h-6 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-xs">1</div>
                         Assets
                     </h2>
-                    <div className="flex items-center gap-2">
-                        <select
-                            className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500"
-                            value={state.aspectRatio}
-                            onChange={(e) => dispatch({ type: 'SET_ASPECT_RATIO', payload: e.target.value })}
-                        >
-                            <option value="1:1">1:1 Square</option>
-                            <option value="9:16">9:16 Vertical</option>
-                            <option value="16:9">16:9 Horizontal</option>
-                            <option value="3:4">3:4 Portrait</option>
-                            <option value="4:3">4:3 Landscape</option>
-                        </select>
-                        <select
-                            className="text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500"
-                            value={state.selectedModel}
-                            onChange={(e) => dispatch({ type: 'SET_MODEL', payload: e.target.value })}
-                        >
-                            <option value="nano-banana-pro">Nano Banana Pro</option>
-                            <option value="nano-banana-2">Nano Banana 2 (Default)</option>
-                            <option value="nano-banana">Nano Banana</option>
-                        </select>
-                    </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FileUploader

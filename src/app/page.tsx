@@ -123,10 +123,32 @@ const AppContent = () => {
   return (
     <div className="h-screen bg-gray-100 text-gray-900 font-sans overflow-hidden flex flex-col relative w-full">
       <GlobalToast />
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 py-3 px-4 z-10 flex justify-center">
-        <h1 className="text-xl font-bold bg-gradient-to-r from-violet-700 to-fuchsia-600 bg-clip-text text-transparent">
+      <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 py-3 px-4 z-10 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <h1 className="text-xl font-bold bg-gradient-to-r from-violet-700 to-fuchsia-600 bg-clip-text text-transparent shrink-0">
           ana Style Transfer Machine
         </h1>
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-center">
+          <select
+            className="text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+            value={state.aspectRatio}
+            onChange={(e) => dispatch({ type: 'SET_ASPECT_RATIO', payload: e.target.value })}
+          >
+            <option value="1:1">1:1 Square</option>
+            <option value="9:16">9:16 Vertical</option>
+            <option value="16:9">16:9 Horizontal</option>
+            <option value="3:4">3:4 Portrait</option>
+            <option value="4:3">4:3 Landscape</option>
+          </select>
+          <select
+            className="text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-lg p-1.5 focus:ring-violet-500 outline-none cursor-pointer hover:bg-gray-100 transition-colors"
+            value={state.selectedModel}
+            onChange={(e) => dispatch({ type: 'SET_MODEL', payload: e.target.value })}
+          >
+            <option value="nano-banana-pro">Banana Pro</option>
+            <option value="nano-banana-2">Banana 2</option>
+            <option value="nano-banana">Banana Basic</option>
+          </select>
+        </div>
       </header>
       <main className="flex-1 overflow-hidden relative">
         <div className={`h-full overflow-y-auto ${state.view === 'setup' ? 'block' : 'hidden'}`}>

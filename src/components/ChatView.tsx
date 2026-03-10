@@ -184,8 +184,16 @@ export const ChatView = () => {
         }
     };
 
+    const stopRef = useRef(false);
+
+    const handleStop = () => {
+        stopRef.current = true;
+        setIsTyping(false);
+    };
+
     const handleSend = async () => {
         if (!input.trim() && !attachedImage) return;
+        stopRef.current = false; // Reset stop flag on new send
 
         // Handle immediate action commands
         if (input.trim() === '/clear') {
@@ -221,6 +229,11 @@ export const ChatView = () => {
         const MAX_TURNS = 30;
 
         const processTurn = async (currentHistory: any[]) => {
+            if (stopRef.current) {
+                setIsTyping(false);
+                dispatch({ type: 'ADD_MESSAGE', payload: { role: 'assistant', text: "_Execution halted by user._" } });
+                return;
+            }
             if (turns >= MAX_TURNS) {
                 setIsTyping(false);
                 return;
@@ -318,11 +331,19 @@ export const ChatView = () => {
 
     return (
         <div className="flex flex-col h-full bg-gray-50 relative">
-            <div className="px-4 pt-3 flex justify-end">
+            <div className="px-4 pt-4 flex justify-between items-center bg-gray-50/80 sticky top-0 z-20 backdrop-blur-sm pb-2 border-b border-gray-100/50">
                 <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1 shadow-sm border border-gray-100">
                     <Cpu size={14} className="text-violet-500" />
                     <span className="text-xs font-bold text-gray-700">Gemini 3.0 Flash (Preview)</span>
                 </div>
+                {isTyping && (
+                    <button
+                        onClick={handleStop}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-red-50 text-red-600 rounded-full text-xs font-bold border border-red-100 hover:bg-red-100 transition-all shadow-sm active:scale-95 animate-pulse"
+                    >
+                        <X size={14} /> Stop Assistant
+                    </button>
+                )}
             </div>
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 pb-32 space-y-4">
                 {state.messages.filter((m: any) => !m.isHidden).map((msg: any, i: number) => {
