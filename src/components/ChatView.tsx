@@ -66,7 +66,8 @@ export const ChatView = () => {
         { cmd: '/expression', text: "Let's change the facial expression", desc: "Change expression" },
         { cmd: '/search', text: "Search Ana's Library for ", desc: "Search Pinecone DB" },
         { cmd: '/carousel', text: "Generate a cohesive 5-slide carousel from current base", desc: "Batch Generate Carousel" },
-        { cmd: '/generate', text: "Go ahead and generate the image", desc: "Trigger Generation" }
+        { cmd: '/generate', text: "Go ahead and generate the image", desc: "Trigger Generation" },
+        { cmd: '/clear', text: '', desc: "Clear chat history", action: 'clear' }
     ];
 
     useEffect(() => {
@@ -87,6 +88,12 @@ export const ChatView = () => {
     }, [selectedIndex]);
 
     const applySlashCommand = (command: any) => {
+        if (command.action === 'clear') {
+            dispatch({ type: 'CLEAR_MESSAGES' });
+            setInput('');
+            setFilteredCommands([]);
+            return;
+        }
         setInput(command.text);
         setFilteredCommands([]);
         document.getElementById('chat-input')?.focus();
@@ -179,6 +186,13 @@ export const ChatView = () => {
 
     const handleSend = async () => {
         if (!input.trim() && !attachedImage) return;
+
+        // Handle immediate action commands
+        if (input.trim() === '/clear') {
+            dispatch({ type: 'CLEAR_MESSAGES' });
+            setInput('');
+            return;
+        }
         const userMsg = input;
         const img = attachedImage;
         setInput('');

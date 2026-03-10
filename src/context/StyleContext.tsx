@@ -62,6 +62,7 @@ const reducer = (state: any, action: any) => {
             };
         case 'REMOVE_VIDEO': return { ...state, videos: state.videos.filter((v: any) => v.id !== action.payload) };
         case 'ADD_MESSAGE': return { ...state, messages: [...state.messages, action.payload] };
+        case 'CLEAR_MESSAGES': return { ...state, messages: [{ role: 'assistant', text: "Chat cleared. Fresh start — what are we creating?", isHidden: false }] };
         case 'SET_MODAL': return { ...state, editModal: action.payload };
         case 'REGISTER_GENERATE': return { ...state, generateFn: action.payload };
         case 'LOAD_CHAT_CONTEXT': {

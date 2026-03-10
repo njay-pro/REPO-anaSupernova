@@ -3,7 +3,18 @@ import path from 'path';
 
 const PROMPTS_DIR = path.join(process.cwd(), 'src/prompts');
 
-export function getPrompt(key: string, variables: Record<string, any> = {}): string {
+// Add new prompt keys here as you add new .md files
+export type PromptKey =
+    | 'chat'
+    | 'generate-image'
+    | 'style-extraction'
+    | 'bg-extraction'
+    | 'outfit-extraction'
+    | 'subject-extraction'
+    | 'edit-suggestion'
+    | 'suggestion';
+
+export function getPrompt(key: PromptKey, variables: Record<string, any> = {}): string {
     const filePath = path.join(PROMPTS_DIR, `${key}.md`);
     if (!fs.existsSync(filePath)) {
         throw new Error(`Prompt file not found: ${key}.md`);
