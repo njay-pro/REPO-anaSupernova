@@ -22,7 +22,8 @@ export const SetupView = () => {
         try {
             const res = await ApiService.generateCall('', [state.reference], 'gemini-3-flash-preview', {
                 promptKey: 'style-extraction',
-                params: { jsonStructure: JSON_STRUCTURE }
+                params: { jsonStructure: JSON_STRUCTURE },
+                modalities: ['TEXT']
             });
             const text = res.candidates?.[0]?.content?.parts?.[0]?.text;
             const json = ApiService.extractJson(text);

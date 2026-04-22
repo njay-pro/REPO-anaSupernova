@@ -1,10 +1,9 @@
 "use client";
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Settings, MessageSquare, Layers, Play } from 'lucide-react';
 import { StyleProvider, StyleContext } from '@/context/StyleContext';
 import { SetupView } from '@/components/SetupView';
 import { GalleryView } from '@/components/GalleryView';
-import { CinemaView } from '@/components/CinemaView';
 import { ChatView } from '@/components/ChatView';
 import { EditModal } from '@/components/ui/EditModal';
 import { GlobalToast } from '@/components/ui/GlobalToast';
@@ -14,14 +13,20 @@ import { ApiService } from '@/lib/api';
 const AppContent = () => {
   const { state, dispatch } = useContext(StyleContext);
 
+  const stateRef = useRef(state);
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
   const handleGenerate = async (overrides: any = {}) => {
-    // Generate an array of target states so we can process one or many
+    const currentState = stateRef.current;
+    if (currentState.isGenerating) return;
+    dispatch({ type: 'SET_GENERATING', payload: true });
     const targetStates: any[] = [];
 
     if (overrides.batchVariants && Array.isArray(overrides.batchVariants)) {
       overrides.batchVariants.forEach((v: any) => {
-        // We use a deep merge here similar to the edit tool to safely build the variants
-        const mergedJson = JSON.parse(JSON.stringify(state.activeStyleJson));
+        const mergedJson = JSON.parse(JSON.stringify(currentState.activeStyleJson));
         for (const key in v) {
           if (v[key] !== null && typeof v[key] === 'object' && mergedJson[key] !== null && typeof mergedJson[key] === 'object' && !Array.isArray(v[key])) {
             Object.assign(mergedJson[key], v[key]);
@@ -29,10 +34,10 @@ const AppContent = () => {
             mergedJson[key] = v[key];
           }
         }
-        targetStates.push({ ...state, activeStyleJson: mergedJson });
+        targetStates.push({ ...currentState, activeStyleJson: mergedJson });
       });
     } else {
-      targetStates.push({ ...state, ...overrides });
+      targetStates.push({ ...currentState, ...overrides });
     }
 
     if (!targetStates[0] || !targetStates[0].subject1 || Object.keys(targetStates[0].activeStyleJson).length === 0) {
@@ -42,8 +47,7 @@ const AppContent = () => {
 
     dispatch({ type: 'SET_VIEW', payload: 'gallery' });
 
-    // Kick off all generations in parallel
-    await Promise.all(targetStates.map(async (currentState) => {
+    await Promise.all(targetStates.map(async (targetState) => {
       const tempId = typeof crypto !== 'undefined' ? crypto.randomUUID() : (Date.now() + Math.random()).toString();
 
       dispatch({
@@ -52,29 +56,28 @@ const AppContent = () => {
           id: tempId,
           status: 'loading',
           image: null,
-          json: JSON.stringify(currentState.activeStyleJson),
-          sub1: currentState.subject1,
-          sub2: currentState.subject2,
+          json: JSON.stringify(targetState.activeStyleJson),
+          sub1: targetState.subject1,
+          sub2: targetState.subject2,
           type: 'generated',
-          model: currentState.selectedModel
+          model: targetState.selectedModel
         }
       });
 
       try {
-        const images = [currentState.subject1];
-        if (currentState.subject2) images.push(currentState.subject2);
-        if (currentState.useExtractedBg && currentState.extractedBg) images.push(currentState.extractedBg);
-        if (currentState.useExtractedOutfit && currentState.extractedOutfit) images.push(currentState.extractedOutfit);
+        const images = [targetState.subject1];
+        if (targetState.subject2) images.push(targetState.subject2);
+        if (targetState.useExtractedBg && targetState.extractedBg) images.push(targetState.extractedBg);
+        if (targetState.useExtractedOutfit && targetState.extractedOutfit) images.push(targetState.extractedOutfit);
 
-        const res = await ApiService.generateCall('', images, currentState.selectedModel, {
+        const res = await ApiService.generateCall('', images, targetState.selectedModel, {
           promptKey: 'generate-image',
-          params: { activeStyleJson: currentState.activeStyleJson },
-          aspectRatio: currentState.aspectRatio
+          params: { activeStyleJson: targetState.activeStyleJson },
+          aspectRatio: targetState.aspectRatio
         });
         const candidate = res.candidates?.[0];
         const parts = candidate?.content?.parts || [];
 
-        // Find image part - handle both camelCase (SDK) and snake_case (REST)
         const imagePart = parts.find((p: any) => p.inlineData || p.inline_data);
         const data = imagePart ? (imagePart.inlineData?.data || imagePart.inline_data?.data) : null;
 
@@ -92,7 +95,6 @@ const AppContent = () => {
             }
           });
         } else {
-          // Check for specific failure reasons in candidate (e.g. safety filters)
           const finishReason = candidate?.finishReason || candidate?.finish_reason;
           const msg = finishReason ? `Model finished with reason: ${finishReason}` : "No image data returned";
           throw new Error(msg);
@@ -110,15 +112,16 @@ const AppContent = () => {
       }
     }));
 
+    dispatch({ type: 'SET_GENERATING', payload: false });
     dispatch({ type: 'SET_NOTIFICATION', payload: { message: targetStates.length > 1 ? "Carousel Batch Generated!" : "Masterpiece Generated!", type: 'success' } });
   };
 
-  // Expose handleGenerate to the context or a shared ref if needed, 
-  // but for now we'll pass it down or handle it in ChatView separately.
-  // Actually, let's put it in the context so it's globally available.
+  // Register handleGenerate once on mount. Uses stateRef to always access latest state.
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     dispatch({ type: 'REGISTER_GENERATE', payload: handleGenerate });
-  }, [state.activeStyleJson, state.subject1, state.subject2, state.selectedModel]);
+  }, []);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return (
     <div className="h-screen bg-gray-100 text-gray-900 font-sans overflow-hidden flex flex-col relative w-full">
@@ -144,7 +147,6 @@ const AppContent = () => {
             value={state.selectedModel}
             onChange={(e) => dispatch({ type: 'SET_MODEL', payload: e.target.value })}
           >
-            <option value="nano-banana-pro">Banana Pro</option>
             <option value="nano-banana-2">Banana 2</option>
             <option value="nano-banana">Banana Basic</option>
           </select>
@@ -156,9 +158,6 @@ const AppContent = () => {
         </div>
         <div className={`h-full overflow-y-auto ${state.view === 'gallery' ? 'block' : 'hidden'}`}>
           <GalleryView />
-        </div>
-        <div className={`h-full overflow-y-auto ${state.view === 'cinema' ? 'block' : 'hidden'}`}>
-          <CinemaView />
         </div>
         <div className={`h-full ${state.view === 'chat' ? 'block' : 'hidden'}`}>
           <ChatView />
@@ -174,13 +173,15 @@ const AppContent = () => {
         <div className="absolute bottom-[60px] left-0 right-0 p-4 bg-gradient-to-t from-white via-white/90 to-transparent z-20 pointer-events-none flex justify-center">
           <button
             onClick={handleGenerate}
-            className="pointer-events-auto w-full max-w-md bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-xl shadow-violet-200 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+            disabled={state.isGenerating}
+            className="pointer-events-auto w-full max-w-md bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-xl shadow-violet-200 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all flex items-center justify-center gap-2"
           >
-            <Play fill="currentColor" size={16} /> Apply Style Transfer
+            {state.isGenerating ? <Spinner className="w-5 h-5" /> : <Play fill="currentColor" size={16} />}
+            {state.isGenerating ? 'Synthesizing...' : 'Apply Style Transfer'}
           </button>
         </div>
       )}
-      <nav className="h-[60px] bg-white border-t border-gray-200 grid grid-cols-4 z-30 shrink-0 mt-auto">
+      <nav className="h-[60px] bg-white border-t border-gray-200 grid grid-cols-3 z-30 shrink-0 mt-auto">
         <button onClick={() => dispatch({ type: 'SET_VIEW', payload: 'setup' })} className={`flex flex-col items-center justify-center gap-1 ${state.view === 'setup' ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'}`}>
           <Settings size={20} />
           <span className="text-[10px] font-medium">Setup</span>
@@ -193,11 +194,6 @@ const AppContent = () => {
           <Layers size={20} />
           <span className="text-[10px] font-medium">Gallery</span>
           {state.gallery.length > 0 && <span className="absolute top-2 right-8 w-2 h-2 bg-red-500 rounded-full" />}
-        </button>
-        <button onClick={() => dispatch({ type: 'SET_VIEW', payload: 'cinema' })} className={`flex flex-col items-center justify-center gap-1 relative ${state.view === 'cinema' ? 'text-violet-600' : 'text-gray-400 hover:text-gray-600'}`}>
-          <Play size={20} />
-          <span className="text-[10px] font-medium">Cinema</span>
-          {(state.videos?.length || 0) > 0 && <span className="absolute top-2 right-8 w-2 h-2 bg-violet-500 rounded-full" />}
         </button>
       </nav>
       <EditModal />

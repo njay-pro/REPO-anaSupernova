@@ -22,7 +22,8 @@ export const EditModal = () => {
         setLoading(true);
         try {
             const res = await ApiService.generateCall('', [baseImage], state.selectedModel, {
-                promptKey: 'edit-suggestion'
+                promptKey: 'edit-suggestion',
+                modalities: ['TEXT']
             });
             const json = ApiService.extractJson(res.candidates?.[0]?.content?.parts?.[0]?.text || '');
             if (json && Array.isArray(json)) setSuggestions(json);

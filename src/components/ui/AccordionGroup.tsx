@@ -22,7 +22,8 @@ export const AccordionGroup: React.FC<AccordionGroupProps> = ({ title, data, onU
         try {
             const suggestionRes = await ApiService.generateCall('', [], state.selectedModel, {
                 promptKey: 'suggestion',
-                params: { field: key, json: state.activeStyleJson }
+                params: { field: key, json: state.activeStyleJson },
+                modalities: ['TEXT']
             });
 
             const text = suggestionRes.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';

@@ -41,6 +41,7 @@ export const ChatView = () => {
     const itemsRef = useRef<(HTMLButtonElement | null)[]>([]);
     const [attachedImage, setAttachedImage] = useState<string | null>(null);
     const fileInput = useRef<HTMLInputElement>(null);
+    const inputDebounceRef = useRef<NodeJS.Timeout | null>(null);
 
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -79,6 +80,14 @@ export const ChatView = () => {
     }, [filteredCommands]);
 
     useEffect(() => {
+        return () => {
+            if (inputDebounceRef.current) {
+                clearTimeout(inputDebounceRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
         if (itemsRef.current[selectedIndex]) {
             itemsRef.current[selectedIndex]?.scrollIntoView({
                 block: 'nearest',
@@ -102,13 +111,20 @@ export const ChatView = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const val = e.target.value;
         setInput(val);
-        if (val.startsWith('/')) {
-            const query = val.slice(1).toLowerCase();
-            const matches = SLASH_COMMANDS.filter(c => c.cmd.toLowerCase().includes(query));
-            setFilteredCommands(matches);
-        } else {
-            setFilteredCommands([]);
+        
+        if (inputDebounceRef.current) {
+            clearTimeout(inputDebounceRef.current);
         }
+
+        inputDebounceRef.current = setTimeout(() => {
+            if (val.startsWith('/')) {
+                const query = val.slice(1).toLowerCase();
+                const matches = SLASH_COMMANDS.filter(c => c.cmd.toLowerCase().includes(query));
+                setFilteredCommands(matches);
+            } else {
+                setFilteredCommands([]);
+            }
+        }, 150);
     };
 
     const stateRef = useRef(state);
@@ -165,6 +181,7 @@ export const ChatView = () => {
                     return { message: `Error deleting style: ${e.message}` };
                 }
             case 'generate_image':
+                if (stateRef.current.isGenerating) return { message: "Error: A generation is already in progress. Please wait for it to finish before triggering another one." };
                 if (stateRef.current.generateFn) {
                     // Pass the latest activeStyleJson explicitly to override any stale closures in generateFn
                     stateRef.current.generateFn({ activeStyleJson: stateRef.current.activeStyleJson });
@@ -172,6 +189,7 @@ export const ChatView = () => {
                 }
                 return { message: "Error: Generation function not registered." };
             case 'generate_carousel':
+                if (stateRef.current.isGenerating) return { message: "Error: A generation is already in progress. Please wait for it to finish before triggering another one." };
                 if (stateRef.current.generateFn) {
                     if (!args.variants || !Array.isArray(args.variants)) {
                         return { message: "Error: No variants array provided." };
