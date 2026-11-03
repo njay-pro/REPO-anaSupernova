@@ -1,0 +1,46 @@
+{
+  "week": "week 01",
+  "account": "@ana.supernova",
+  "range_label": "04 – 07 nov 2026",
+  "span_label": "rabu – sabtu",
+  "footnote": "minggu 08 nov · libur + recap  ·  senin 09 nov · full week senin–sabtu",
+  "slots": [
+    { "time": "09:00", "type": "take", "label": "hot take" },
+    { "time": "13:00", "type": "card", "label": "prompt card" },
+    { "time": "20:30", "type": "conf", "label": "confession" }
+  ],
+  "days": [
+    {
+      "day": "rabu", "date": "04 nov", "tag": "unlearn",
+      "posts": [
+        { "ch": "ch.01", "type": "take", "text": "everyone asks AI to do more. i asked what to delete." },
+        { "ch": "ch.02", "type": "card", "text": "the 3-musts calendar prompt" },
+        { "ch": "ch.03", "type": "conf", "text": "my calendar looked busy but nothing felt important" }
+      ]
+    },
+    {
+      "day": "kamis", "date": "05 nov", "tag": "the yes-man",
+      "posts": [
+        { "ch": "ch.04", "type": "take", "text": "AI is the most dangerous yes-man in your life" },
+        { "ch": "ch.05", "type": "card", "text": "one line to add: “tell me where this is wrong”" },
+        { "ch": "ch.06", "type": "conf", "text": "i had 11 AI apps. use 2. the rest was anxiety with a subscription" }
+      ]
+    },
+    {
+      "day": "jumat", "date": "06 nov", "tag": "consumption → action",
+      "posts": [
+        { "ch": "ch.07", "type": "take", "text": "200 saves, 0 actions. that’s a graveyard i keep feeding" },
+        { "ch": "ch.08", "type": "card", "text": "save → action in 10 minutes" },
+        { "ch": "ch.09", "type": "conf", "text": "every sunday: what did i do that i don’t remember doing?" }
+      ]
+    },
+    {
+      "day": "sabtu", "date": "07 nov", "tag": "context + off-ramp",
+      "posts": [
+        { "ch": "ch.10", "type": "take", "text": "AI can’t tell you what to wear. it doesn’t know you." },
+        { "ch": "ch.11", "type": "card", "text": "the 5-line context dump that upgrades every prompt" },
+        { "ch": "ch.12", "type": "conf", "text": "there is no off-ramp. so i built one." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,179 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;background:#f7f2e8;color:#302d28;
+  font-family:"Inter","Helvetica Neue",sans-serif;-webkit-font-smoothing:antialiased}
+.paper{width:1080px;position:relative;padding:54px 64px 60px 78px;background:#f7f2e8}
+.paper::before{content:"";position:absolute;left:54px;top:0;bottom:0;width:1px;background:rgba(181,116,95,.3)}
+header{margin-bottom:26px}
+.kicker{font-size:13px;letter-spacing:.34em;text-transform:uppercase;color:#a2957f;margin-bottom:14px}
+h1{font-family:"Noteworthy","MarkerFelt",serif;font-weight:400;font-size:65px;line-height:.95;color:#26231f}
+h1 em{font-style:normal;color:#b5745f}
+.subline{display:flex;align-items:baseline;gap:16px;margin-top:16px;font-size:17px;color:#6f665a}
+.subline b{font-weight:600;color:#3b372f}
+.dot{width:5px;height:5px;border-radius:50%;background:#c9bda6;display:inline-block;vertical-align:middle}
+.legend{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-size:12px;letter-spacing:.13em;text-transform:uppercase;border:1px solid #ddd1ba;
+  border-radius:100px;padding:7px 14px;color:#7c7263;background:rgba(255,255,255,.45)}
+.chip s{text-decoration:none;color:#b5745f;font-weight:600}
+.week{margin-top:34px;border-top:1px solid #ded2ba;padding-top:4px;
+  background:repeating-linear-gradient(to bottom,transparent 0 39px,rgba(146,128,100,.085) 39px 40px)}
+.day{padding:20px 0 16px;border-bottom:1px dashed #ded2ba}
+.day:last-child{border-bottom:none}
+.dayhead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.bullet{font-size:15px;color:#b5745f;line-height:1}
+.dayname{font-family:"Noteworthy","MarkerFelt",serif;font-size:30px;color:#2b2822}
+.daytag{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a2957f;margin-left:2px}
+.dateright{margin-left:auto;font-size:12px;letter-spacing:.18em;color:#b3a68f;text-transform:uppercase}
+.post{display:flex;gap:14px;padding:8px 0;align-items:flex-start}
+.box{width:19px;height:19px;border:1.6px solid #9d907a;border-radius:2px;flex:0 0 19px;
+  margin-top:3px;background:rgba(255,255,255,.55)}
+.body{flex:1;min-width:0}
+.meta{display:flex;gap:10px;align-items:baseline;margin-bottom:2px}
+.slot{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b5745f;font-weight:600}
+.slot.b{color:#6f8272}.slot.c{color:#8a7a95}
+.ch{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#c4b8a0}
+.topic{font-size:21px;line-height:1.3;font-weight:500;color:#2f2c26;letter-spacing:-.005em}
+.track{margin-top:8px;display:flex;gap:24px;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:#b5a68b}
+.track i{font-style:normal;display:inline-block;min-width:50px;border-bottom:1px dotted #c9bda6;margin-left:7px}
+.recap{margin-top:32px;border:1.6px solid #2b2822;border-radius:4px;padding:28px 30px 24px;
+  background:rgba(255,255,255,.46)}
+.recaphead{display:flex;align-items:baseline;gap:14px;margin-bottom:20px}
+.recaphead h2{font-family:"Noteworthy","MarkerFelt",serif;font-weight:400;font-size:37px}
+.recaphead span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#a2957f}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 18px;margin-bottom:22px}
+.stat{border-bottom:1px dotted #c9bda6;padding-bottom:7px}
+.stat .n{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#a89b84;display:block;margin-bottom:14px}
+.stat .v{font-size:12px;color:#c2b296;letter-spacing:.2em}
+.pick{display:flex;gap:24px;margin-bottom:18px;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:#a89b84}
+.pick span{display:flex;align-items:center;gap:7px}
+.pick em{width:13px;height:13px;border:1.4px solid #9d907a;border-radius:50%;display:inline-block}
+.line{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+.line b{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:#7c7263;font-weight:600;min-width:132px}
+.line u{flex:1;border-bottom:1px dotted #c9bda6;height:15px;text-decoration:none}
+footer{margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;color:#b3a68f}
+.nextweek{margin-top:16px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#a2957f}
+.nextweek b{color:#b5745f}
+</style></head><body>
+<div class="paper">
+  <header>
+    <div class="kicker">threads · content plan · week 01</div>
+    <h1>weekly plan <em>ana</em></h1>
+    <div class="subline">
+      <b>04 – 07 nov 2026</b><span class="dot"></span><span>rabu – sabtu</span>
+      <span class="dot"></span><span>3 post / hari · 12 total</span>
+      <span class="dot"></span><span>minggu libur</span>
+    </div>
+    <div class="legend"><div class="chip"><s>09:00</s> hot take</div><div class="chip"><s>13:00</s> prompt card</div><div class="chip"><s>20:30</s> confession</div><div class="chip">ebook: ai for daily life</div></div>
+  </header>
+
+  <div class="week">
+    <div class="day">
+      <div class="dayhead"><span class="bullet">●</span><span class="dayname">rabu</span><span class="daytag">unlearn</span><span class="dateright">04 nov</span></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot">09:00 · hot take</span><span class="ch">ch.01</span></div>
+        <div class="topic">everyone asks AI to do more. i asked what to delete.</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot b">13:00 · prompt card</span><span class="ch">ch.02</span></div>
+        <div class="topic">the 3-musts calendar prompt</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot c">20:30 · confession</span><span class="ch">ch.03</span></div>
+        <div class="topic">my calendar looked busy but nothing felt important</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+    </div>
+    <div class="day">
+      <div class="dayhead"><span class="bullet">●</span><span class="dayname">kamis</span><span class="daytag">the yes-man</span><span class="dateright">05 nov</span></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot">09:00 · hot take</span><span class="ch">ch.04</span></div>
+        <div class="topic">AI is the most dangerous yes-man in your life</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot b">13:00 · prompt card</span><span class="ch">ch.05</span></div>
+        <div class="topic">one line to add: “tell me where this is wrong”</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot c">20:30 · confession</span><span class="ch">ch.06</span></div>
+        <div class="topic">i had 11 AI apps. use 2. the rest was anxiety with a subscription</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+    </div>
+    <div class="day">
+      <div class="dayhead"><span class="bullet">●</span><span class="dayname">jumat</span><span class="daytag">consumption → action</span><span class="dateright">06 nov</span></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot">09:00 · hot take</span><span class="ch">ch.07</span></div>
+        <div class="topic">200 saves, 0 actions. that’s a graveyard i keep feeding</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot b">13:00 · prompt card</span><span class="ch">ch.08</span></div>
+        <div class="topic">save → action in 10 minutes</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot c">20:30 · confession</span><span class="ch">ch.09</span></div>
+        <div class="topic">every sunday: what did i do that i don’t remember doing?</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+    </div>
+    <div class="day">
+      <div class="dayhead"><span class="bullet">●</span><span class="dayname">sabtu</span><span class="daytag">context + off-ramp</span><span class="dateright">07 nov</span></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot">09:00 · hot take</span><span class="ch">ch.10</span></div>
+        <div class="topic">AI can’t tell you what to wear. it doesn’t know you.</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot b">13:00 · prompt card</span><span class="ch">ch.11</span></div>
+        <div class="topic">the 5-line context dump that upgrades every prompt</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+      <div class="post"><div class="box"></div><div class="body">
+        <div class="meta"><span class="slot c">20:30 · confession</span><span class="ch">ch.12</span></div>
+        <div class="topic">there is no off-ramp. so i built one.</div>
+        <div class="track"><span>24h</span>
+          <span>likes<i></i></span><span>replies<i></i></span><span>reposts<i></i></span><span>saves<i></i></span>
+        </div>
+      </div></div>
+    </div></div>
+
+  <div class="recap">
+    <div class="recaphead"><h2>weekly recap</h2><span>isi 24 jam setelah post terakhir</span></div>
+    <div class="stats"><div class="stat"><span class="n">posted</span><span class="v">___ / 12</span></div><div class="stat"><span class="n">likes</span><span class="v">______</span></div><div class="stat"><span class="n">replies</span><span class="v">______</span></div><div class="stat"><span class="n">reposts</span><span class="v">______</span></div><div class="stat"><span class="n">saves</span><span class="v">______</span></div><div class="stat"><span class="n">avg 24h likes</span><span class="v">______</span></div><div class="stat"><span class="n">engagement %</span><span class="v">______</span></div><div class="stat"><span class="n">followers +/-</span><span class="v">______</span></div></div>
+    <div class="pick"><span>top format</span><span><em></em>hot take</span><span><em></em>prompt card</span><span><em></em>confession</span></div>
+    <div class="line"><b>best post</b><u></u></div><div class="line"><b>worst post</b><u></u></div><div class="line"><b>keep doing</b><u></u></div><div class="line"><b>kill next week</b><u></u></div><div class="line"><b>test next week</b><u></u></div>
+  </div>
+
+  <footer><span>lock lowercase</span>·<span>1 post = 1 idea</span>·<span>no threading</span>·<span>hook in 2 lines</span>·<span>pin the best utility post</span></footer>
+  <div class="nextweek">minggu 08 nov · libur + recap  ·  senin 09 nov · full week senin–sabtu</div>
+</div></body></html>

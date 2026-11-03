@@ -3,7 +3,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#f7f2e8">
-<title>weekly plan ana · 03–07 nov</title>
+<title>weekly plan ana · 04–07 nov</title>
 <style>
   :root{
     --paper:#f7f2e8; --ink:#302d28; --ink-soft:#6f665a; --muted:#a2957f;
@@ -145,8 +145,8 @@
     <div class="kicker">threads · content plan · week 01</div>
     <h1>weekly plan <em>ana</em></h1>
     <div class="subline">
-      <b>03 – 07 nov 2026</b><span class="dot"></span><span>selasa – sabtu</span>
-      <span class="dot"></span><span>3 post / hari · 15 total</span>
+      <b>04 – 07 nov 2026</b><span class="dot"></span><span>rabu – sabtu</span>
+      <span class="dot"></span><span>3 post / hari · 12 total</span>
       <span class="dot"></span><span>minggu libur</span>
     </div>
     <div class="legend">
@@ -154,7 +154,7 @@
       <div class="chip"><s>13:00</s> prompt card</div>
       <div class="chip"><s>20:30</s> confession</div>
       <div class="chip">ebook: ai for daily life</div>
-      <div class="progress">posted <b id="pgPost">0</b>/15</div>
+      <div class="progress">posted <b id="pgPost">0</b>/12</div>
     </div>
   </header>
 
@@ -164,7 +164,7 @@
     <div class="recaphead"><h2>weekly recap</h2><span>otomatis · isi 24 jam setelah post terakhir</span></div>
 
     <div class="stats">
-      <div class="stat"><span class="n">posted</span><span class="v" id="rPosted">0 / 15</span></div>
+      <div class="stat"><span class="n">posted</span><span class="v" id="rPosted">0 / 12</span></div>
       <div class="stat"><span class="n">likes</span><span class="v empty" id="rLikes">—</span></div>
       <div class="stat"><span class="n">replies</span><span class="v empty" id="rReplies">—</span></div>
       <div class="stat"><span class="n">reposts</span><span class="v empty" id="rReposts">—</span></div>
@@ -208,36 +208,31 @@
   "use strict";
 
   var DATA = [
-    {day:"selasa", tag:"unlearn", date:"03 nov", posts:[
+    {day:"rabu", tag:"unlearn", date:"04 nov", posts:[
       {id:"s1", slot:"09:00", type:"take", ch:"ch.01", text:"everyone asks AI to do more. i asked what to delete."},
       {id:"s2", slot:"13:00", type:"card", ch:"ch.02", text:"the 3-musts calendar prompt"},
       {id:"s3", slot:"20:30", type:"conf", ch:"ch.03", text:"my calendar looked busy but nothing felt important"}
     ]},
-    {day:"rabu", tag:"ritual", date:"04 nov", posts:[
-      {id:"r1", slot:"09:00", type:"take", ch:"ch.04", text:"AI output longer than 10 minutes = entertainment, not action"},
-      {id:"r2", slot:"13:00", type:"card", ch:"ch.05", text:"the screenshot ritual — i stopped writing prompts"},
-      {id:"r3", slot:"20:30", type:"conf", ch:"ch.06", text:"ideas at 3am, read at 8. the dump ritual"}
-    ]},
     {day:"kamis", tag:"the yes-man", date:"05 nov", posts:[
-      {id:"k1", slot:"09:00", type:"take", ch:"ch.07", text:"AI is the most dangerous yes-man in your life"},
-      {id:"k2", slot:"13:00", type:"card", ch:"ch.08", text:"one line to add: \u201Ctell me where this is wrong\u201D"},
-      {id:"k3", slot:"20:30", type:"conf", ch:"ch.09", text:"i had 11 AI apps. use 2. the rest was anxiety with a subscription"}
+      {id:"r1", slot:"09:00", type:"take", ch:"ch.04", text:"AI is the most dangerous yes-man in your life"},
+      {id:"r2", slot:"13:00", type:"card", ch:"ch.05", text:"one line to add: \u201Ctell me where this is wrong\u201D"},
+      {id:"r3", slot:"20:30", type:"conf", ch:"ch.06", text:"i had 11 AI apps. use 2. the rest was anxiety with a subscription"}
     ]},
     {day:"jumat", tag:"consumption \u2192 action", date:"06 nov", posts:[
-      {id:"j1", slot:"09:00", type:"take", ch:"ch.10", text:"200 saves, 0 actions. that\u2019s a graveyard i keep feeding"},
-      {id:"j2", slot:"13:00", type:"card", ch:"ch.11", text:"save \u2192 action in 10 minutes (the translation prompt)"},
-      {id:"j3", slot:"20:30", type:"conf", ch:"ch.12", text:"every sunday: what did i do that i don\u2019t remember doing?"}
+      {id:"k1", slot:"09:00", type:"take", ch:"ch.07", text:"200 saves, 0 actions. that\u2019s a graveyard i keep feeding"},
+      {id:"k2", slot:"13:00", type:"card", ch:"ch.08", text:"save \u2192 action in 10 minutes"},
+      {id:"k3", slot:"20:30", type:"conf", ch:"ch.09", text:"every sunday: what did i do that i don\u2019t remember doing?"}
     ]},
-    {day:"sabtu", tag:"context + literacy + off-ramp", date:"07 nov", posts:[
-      {id:"a1", slot:"09:00", type:"take", ch:"ch.13", text:"AI can\u2019t tell you what to wear. it doesn\u2019t know you."},
-      {id:"a2", slot:"13:00", type:"card", ch:"ch.14", text:"the one-sentence spec: 4 slots"},
-      {id:"a3", slot:"20:30", type:"conf", ch:"ch.15", text:"there is no off-ramp. so i built one."}
+    {day:"sabtu", tag:"context + off-ramp", date:"07 nov", posts:[
+      {id:"a1", slot:"09:00", type:"take", ch:"ch.10", text:"AI can\u2019t tell you what to wear. it doesn\u2019t know you."},
+      {id:"a2", slot:"13:00", type:"card", ch:"ch.11", text:"the 5-line context dump that upgrades every prompt"},
+      {id:"a3", slot:"20:30", type:"conf", ch:"ch.12", text:"there is no off-ramp. so i built one."}
     ]}
   ];
 
   var KEYS = ["likes","replies","reposts","saves"];
   var TYPES = {take:"hot take", card:"prompt card", conf:"confession"};
-  var STORE = "ana-weekly-plan-2026-11-03-v1";
+  var STORE = "ana-weekly-plan-2026-11-04-rabu-v2";
   var state = {checked:{}, eng:{}, notes:{}, followers:""};
 
   /* ---------- load ---------- */
@@ -354,7 +349,7 @@
     });
 
     document.getElementById("pgPost").textContent = posted;
-    document.getElementById("rPosted").textContent = posted + " / 15";
+    document.getElementById("rPosted").textContent = posted + " / 12";
 
     function set(id, val, raw){
       var el = document.getElementById(id);
@@ -401,8 +396,8 @@
     });
     var sum = KEYS.reduce(function(a,k){return a+totals[k];},0);
     var followers = num(state.followers);
-    var out = "RECAP WEEK 01 · 03-07 nov 2026 · @ana.supernova\n" +
-      "posted " + posted + "/15\n" +
+    var out = "RECAP WEEK 01 · 04-07 nov 2026 · @ana.supernova\n" +
+      "posted " + posted + "/12\n" +
       "likes " + totals.likes + " · replies " + totals.replies + " · reposts " + totals.reposts + " · saves " + totals.saves + "\n" +
       "avg likes/post " + (posted ? (totals.likes/posted).toFixed(1) : "-") + "\n" +
       "engagement " + ((posted && followers) ? (sum/(posted*followers)*100).toFixed(2) : "-") + "%\n" +
