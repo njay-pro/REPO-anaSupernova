@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f2e8">
+<title>weekly plan ana · 03–07 nov</title>
+<style>
+  :root{
+    --paper:#f7f2e8; --ink:#302d28; --ink-soft:#6f665a; --muted:#a2957f;
+    --rule:#ded2ba; --hair:#c9bda6; --terra:#b5745f; --sage:#6f8272; --violet:#8a7a95;
+    --box:#9d907a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:"Inter",-apple-system,"Helvetica Neue",sans-serif;
+    -webkit-font-smoothing:antialiased; padding-bottom:60px;
+  }
+  .paper{
+    width:100%; max-width:1080px; margin:0 auto; position:relative;
+    padding:clamp(26px,4.2vw,54px) clamp(16px,3.8vw,64px) clamp(34px,4vw,60px) clamp(30px,5.2vw,78px);
+  }
+  .paper::before{
+    content:""; position:absolute; left:clamp(14px,3.5vw,54px); top:0; bottom:0; width:1px;
+    background:rgba(181,116,95,.28); pointer-events:none;
+  }
+  /* header */
+  .kicker{font-size:clamp(10px,1.2vw,13px);letter-spacing:.32em;text-transform:uppercase;color:var(--muted);margin-bottom:clamp(9px,1.4vw,14px)}
+  h1{font-family:"Noteworthy","MarkerFelt","Bradley Hand",cursive;font-weight:400;
+     font-size:clamp(40px,7.2vw,65px);line-height:.95;color:#26231f;letter-spacing:-.005em}
+  h1 em{font-style:normal;color:var(--terra)}
+  .subline{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 14px;margin-top:clamp(10px,1.6vw,16px);
+           font-size:clamp(13px,1.5vw,17px);color:var(--ink-soft)}
+  .subline b{font-weight:600;color:#3b372f}
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--hair);display:inline-block}
+  .legend{margin-top:clamp(14px,2vw,22px);display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:clamp(9px,1.1vw,12px);letter-spacing:.13em;text-transform:uppercase;
+        border:1px solid #ddd1ba;border-radius:100px;padding:6px 12px;color:#7c7263;background:rgba(255,255,255,.45)}
+  .chip s{text-decoration:none;color:var(--terra);font-weight:600}
+  .progress{margin-left:auto;font-size:clamp(9px,1.1vw,12px);letter-spacing:.13em;text-transform:uppercase;
+            border:1px solid var(--terra);color:var(--terra);border-radius:100px;padding:6px 14px;background:rgba(181,116,95,.07)}
+  .progress b{font-weight:600}
+  /* week */
+  .week{margin-top:clamp(22px,3vw,34px);border-top:1px solid var(--rule);padding-top:4px;
+        background:repeating-linear-gradient(to bottom,transparent 0 39px,rgba(146,128,100,.085) 39px 40px)}
+  .day{padding:clamp(14px,2vw,20px) 0 clamp(11px,1.6vw,16px);border-bottom:1px dashed var(--rule)}
+  .day:last-child{border-bottom:none}
+  .dayhead{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin-bottom:clamp(8px,1.2vw,12px)}
+  .bullet{font-size:15px;color:var(--terra);line-height:1}
+  .dayname{font-family:"Noteworthy","MarkerFelt","Bradley Hand",cursive;font-size:clamp(23px,3vw,30px);color:#2b2822}
+  .daytag{font-size:clamp(9px,1.1vw,11px);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .dateright{margin-left:auto;font-size:clamp(9px,1.1vw,12px);letter-spacing:.16em;color:#b3a68f;text-transform:uppercase}
+  /* post row */
+  .post{display:flex;gap:clamp(10px,1.6vw,14px);padding:7px 0;align-items:flex-start}
+  .boxwrap{display:flex;padding:8px 8px 12px 6px;margin:-8px 0 -12px -6px;cursor:pointer;flex:0 0 auto}
+  .boxwrap input{position:absolute;opacity:0;width:0;height:0}
+  .box{position:relative;width:20px;height:20px;border:1.6px solid var(--box);border-radius:2px;
+       background:rgba(255,255,255,.6);margin-top:3px;transition:background .12s,border-color .12s}
+  .box::after{content:"";position:absolute;left:6px;top:1px;width:5px;height:10px;
+              border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(42deg);
+              opacity:0;transition:opacity .1s}
+  .boxwrap input:checked + .box{background:var(--terra);border-color:var(--terra)}
+  .boxwrap input:checked + .box::after{opacity:1}
+  .body{flex:1;min-width:0}
+  .meta{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap;margin-bottom:2px}
+  .slot{font-size:clamp(9px,1.1vw,11px);letter-spacing:.18em;text-transform:uppercase;color:var(--terra);font-weight:600}
+  .slot.b{color:var(--sage)} .slot.c{color:var(--violet)}
+  .ch{font-size:clamp(9px,1.05vw,11px);letter-spacing:.14em;text-transform:uppercase;color:#c4b8a0}
+  .total{margin-left:auto;font-size:clamp(9px,1.05vw,11px);letter-spacing:.12em;color:#c0b49c;font-variant-numeric:tabular-nums}
+  .total.on{color:var(--terra)}
+  .topic{font-size:clamp(15px,1.95vw,21px);line-height:1.3;font-weight:500;color:#2f2c26;letter-spacing:-.005em;transition:color .15s}
+  .post.done .topic{color:#8d8474}
+  .track{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px 20px;font-size:clamp(9px,1.05vw,11px);
+         letter-spacing:.13em;text-transform:uppercase;color:#b5a68b;align-items:baseline}
+  .track .h{letter-spacing:.14em}
+  .f{display:flex;align-items:baseline;gap:6px}
+  .f label{cursor:pointer}
+  .f input{width:44px;border:none;border-bottom:1px dotted var(--hair);background:transparent;
+           font:inherit;font-size:clamp(11px,1.25vw,13px);letter-spacing:0;color:var(--terra);
+           text-align:center;padding:1px 2px;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none}
+  .f input:focus{outline:none;border-bottom:1px solid var(--terra);background:rgba(181,116,95,.07)}
+  .f input::-webkit-outer-spin-button,.f input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  /* recap */
+  .recap{margin-top:clamp(22px,3vw,32px);border:1.6px solid #2b2822;border-radius:4px;
+         padding:clamp(18px,2.6vw,28px) clamp(16px,2.6vw,30px) clamp(16px,2.2vw,24px);
+         background:rgba(255,255,255,.5)}
+  .recaphead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:clamp(14px,2vw,20px)}
+  .recaphead h2{font-family:"Noteworthy","MarkerFelt","Bradley Hand",cursive;font-weight:400;font-size:clamp(27px,3.6vw,37px)}
+  .recaphead span{font-size:clamp(9px,1.1vw,11px);letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,1.6vw,14px) 16px;margin-bottom:clamp(14px,2vw,22px)}
+  @media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}}
+  .stat{border-bottom:1px dotted var(--hair);padding-bottom:6px}
+  .stat .n{font-size:clamp(8px,1vw,11px);letter-spacing:.14em;text-transform:uppercase;color:#a89b84;display:block;margin-bottom:10px}
+  .stat .v{font-size:clamp(15px,1.9vw,19px);color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  .stat .v.empty{color:#cdbfa4;font-weight:400}
+  .stat input{width:100%;border:none;background:transparent;font:inherit;font-size:clamp(15px,1.9vw,19px);
+              font-weight:500;color:var(--ink);padding:0;font-variant-numeric:tabular-nums;-webkit-appearance:none;appearance:none}
+  .stat input:focus{outline:none}
+  .stat input::-webkit-outer-spin-button,.stat input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .stat input::placeholder{color:#cdbfa4;font-weight:400}
+  .fmt{margin-top:6px;margin-bottom:clamp(12px,1.8vw,18px)}
+  .fmt h3{font-size:clamp(8px,1vw,11px);letter-spacing:.15em;text-transform:uppercase;color:#a89b84;font-weight:600;margin-bottom:9px}
+  .fmtrow{display:flex;gap:8px;flex-wrap:wrap}
+  .fpill{border:1px solid #ddd1ba;border-radius:100px;padding:6px 13px;font-size:clamp(9px,1.05vw,11px);
+         letter-spacing:.12em;text-transform:uppercase;color:#8b8171;background:rgba(255,255,255,.5);
+         display:flex;align-items:center;gap:8px;transition:.15s}
+  .fpill b{font-weight:600;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+  .fpill.win{border-color:var(--terra);background:rgba(181,116,95,.11);color:var(--terra)}
+  .fpill.win b{color:var(--terra)}
+  .lines{display:flex;flex-direction:column;gap:clamp(11px,1.5vw,14px)}
+  .line{display:flex;align-items:baseline;gap:10px}
+  .line b{font-size:clamp(8px,1vw,11px);letter-spacing:.14em;text-transform:uppercase;color:#7c7263;
+          font-weight:600;flex:0 0 clamp(88px,12vw,132px)}
+  .line input{flex:1;min-width:0;border:none;border-bottom:1px dotted var(--hair);background:transparent;
+              font:inherit;font-size:clamp(13px,1.5vw,15px);color:var(--ink);padding:0 0 4px}
+  .line input:focus{outline:none;border-bottom-color:var(--terra)}
+  .line input::placeholder{color:#ddd0b8;font-size:clamp(11px,1.3vw,13px)}
+  /* actions */
+  .actions{margin-top:clamp(14px,2vw,20px);display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+  button{font:inherit;font-size:clamp(9px,1.05vw,11px);letter-spacing:.14em;text-transform:uppercase;
+         border:1px solid #2b2822;background:transparent;color:#2b2822;border-radius:100px;
+         padding:9px 16px;cursor:pointer;transition:.12s}
+  button:hover{background:#2b2822;color:var(--paper)}
+  button.ghost{border-color:#c9bda6;color:#8b8171}
+  button.ghost:hover{background:#8b8171;border-color:#8b8171;color:var(--paper)}
+  .saved{font-size:clamp(9px,1vw,11px);letter-spacing:.14em;text-transform:uppercase;color:var(--sage);opacity:0;transition:opacity .3s}
+  .saved.on{opacity:1}
+  footer{margin-top:clamp(16px,2.4vw,24px);display:flex;gap:8px;flex-wrap:wrap;
+         font-size:clamp(8px,1vw,11px);letter-spacing:.14em;text-transform:uppercase;color:#b3a68f}
+  .nextweek{margin-top:12px;font-size:clamp(9px,1.1vw,12px);letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+  .nextweek b{color:var(--terra)}
+  @media print{
+    body{padding:0}
+    .actions,.progress,.saved{display:none}
+    .week{background:none}
+    .day{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+<div class="paper" id="paper">
+
+  <header>
+    <div class="kicker">threads · content plan · week 01</div>
+    <h1>weekly plan <em>ana</em></h1>
+    <div class="subline">
+      <b>03 – 07 nov 2026</b><span class="dot"></span><span>selasa – sabtu</span>
+      <span class="dot"></span><span>3 post / hari · 15 total</span>
+      <span class="dot"></span><span>minggu libur</span>
+    </div>
+    <div class="legend">
+      <div class="chip"><s>09:00</s> hot take</div>
+      <div class="chip"><s>13:00</s> prompt card</div>
+      <div class="chip"><s>20:30</s> confession</div>
+      <div class="chip">ebook: ai for daily life</div>
+      <div class="progress">posted <b id="pgPost">0</b>/15</div>
+    </div>
+  </header>
+
+  <div class="week" id="week"></div>
+
+  <div class="recap">
+    <div class="recaphead"><h2>weekly recap</h2><span>otomatis · isi 24 jam setelah post terakhir</span></div>
+
+    <div class="stats">
+      <div class="stat"><span class="n">posted</span><span class="v" id="rPosted">0 / 15</span></div>
+      <div class="stat"><span class="n">likes</span><span class="v empty" id="rLikes">—</span></div>
+      <div class="stat"><span class="n">replies</span><span class="v empty" id="rReplies">—</span></div>
+      <div class="stat"><span class="n">reposts</span><span class="v empty" id="rReposts">—</span></div>
+      <div class="stat"><span class="n">saves</span><span class="v empty" id="rSaves">—</span></div>
+      <div class="stat"><span class="n">avg 24h likes</span><span class="v empty" id="rAvg">—</span></div>
+      <div class="stat"><span class="n">engagement %</span><span class="v empty" id="rEng">—</span></div>
+      <div class="stat"><span class="n">followers (start)</span>
+        <input type="number" inputmode="numeric" id="rFollowers" placeholder="5090" data-note="followers"></div>
+    </div>
+
+    <div class="fmt">
+      <h3>format · total interaksi</h3>
+      <div class="fmtrow" id="fmtRow"></div>
+    </div>
+
+    <div class="lines">
+      <div class="line"><b>best post</b><input id="nBest" data-note="best" placeholder="ch.__ · __ interaksi"></div>
+      <div class="line"><b>worst post</b><input id="nWorst" data-note="worst" placeholder="ch.__ · kenapa mati"></div>
+      <div class="line"><b>keep doing</b><input id="nKeep" data-note="keep" placeholder=""></div>
+      <div class="line"><b>kill next week</b><input id="nKill" data-note="kill" placeholder=""></div>
+      <div class="line"><b>test next week</b><input id="nTest" data-note="test" placeholder=""></div>
+    </div>
+
+    <div class="actions">
+      <button id="btnCopy">copy recap</button>
+      <button class="ghost" id="btnPrint">print / pdf</button>
+      <button class="ghost" id="btnReset">reset</button>
+      <span class="saved" id="savedTag">tersimpan</span>
+    </div>
+  </div>
+
+  <footer>
+    <span>lock lowercase</span>·<span>1 post = 1 idea</span>·<span>no threading</span>·<span>hook in 2 lines</span>·<span>pin the best utility post</span>
+  </footer>
+  <div class="nextweek">minggu 08 nov · <b>libur + recap</b> &nbsp;·&nbsp; senin 09 nov · full week senin–sabtu</div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var DATA = [
+    {day:"selasa", tag:"unlearn", date:"03 nov", posts:[
+      {id:"s1", slot:"09:00", type:"take", ch:"ch.01", text:"everyone asks AI to do more. i asked what to delete."},
+      {id:"s2", slot:"13:00", type:"card", ch:"ch.02", text:"the 3-musts calendar prompt"},
+      {id:"s3", slot:"20:30", type:"conf", ch:"ch.03", text:"my calendar looked busy but nothing felt important"}
+    ]},
+    {day:"rabu", tag:"ritual", date:"04 nov", posts:[
+      {id:"r1", slot:"09:00", type:"take", ch:"ch.04", text:"AI output longer than 10 minutes = entertainment, not action"},
+      {id:"r2", slot:"13:00", type:"card", ch:"ch.05", text:"the screenshot ritual — i stopped writing prompts"},
+      {id:"r3", slot:"20:30", type:"conf", ch:"ch.06", text:"ideas at 3am, read at 8. the dump ritual"}
+    ]},
+    {day:"kamis", tag:"the yes-man", date:"05 nov", posts:[
+      {id:"k1", slot:"09:00", type:"take", ch:"ch.07", text:"AI is the most dangerous yes-man in your life"},
+      {id:"k2", slot:"13:00", type:"card", ch:"ch.08", text:"one line to add: \u201Ctell me where this is wrong\u201D"},
+      {id:"k3", slot:"20:30", type:"conf", ch:"ch.09", text:"i had 11 AI apps. use 2. the rest was anxiety with a subscription"}
+    ]},
+    {day:"jumat", tag:"consumption \u2192 action", date:"06 nov", posts:[
+      {id:"j1", slot:"09:00", type:"take", ch:"ch.10", text:"200 saves, 0 actions. that\u2019s a graveyard i keep feeding"},
+      {id:"j2", slot:"13:00", type:"card", ch:"ch.11", text:"save \u2192 action in 10 minutes (the translation prompt)"},
+      {id:"j3", slot:"20:30", type:"conf", ch:"ch.12", text:"every sunday: what did i do that i don\u2019t remember doing?"}
+    ]},
+    {day:"sabtu", tag:"context + literacy + off-ramp", date:"07 nov", posts:[
+      {id:"a1", slot:"09:00", type:"take", ch:"ch.13", text:"AI can\u2019t tell you what to wear. it doesn\u2019t know you."},
+      {id:"a2", slot:"13:00", type:"card", ch:"ch.14", text:"the one-sentence spec: 4 slots"},
+      {id:"a3", slot:"20:30", type:"conf", ch:"ch.15", text:"there is no off-ramp. so i built one."}
+    ]}
+  ];
+
+  var KEYS = ["likes","replies","reposts","saves"];
+  var TYPES = {take:"hot take", card:"prompt card", conf:"confession"};
+  var STORE = "ana-weekly-plan-2026-11-03-v1";
+  var state = {checked:{}, eng:{}, notes:{}, followers:""};
+
+  /* ---------- load ---------- */
+  try{
+    var raw = localStorage.getItem(STORE);
+    if(raw){
+      var p = JSON.parse(raw);
+      state.checked = p.checked || {};
+      state.eng = p.eng || {};
+      state.notes = p.notes || {};
+      state.followers = p.followers || "";
+    }
+  }catch(e){}
+
+  var saveTimer, savedTag = document.getElementById("savedTag");
+  function save(){
+    try{ localStorage.setItem(STORE, JSON.stringify(state)); }catch(e){}
+    savedTag.classList.add("on");
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){ savedTag.classList.remove("on"); }, 1200);
+  }
+
+  /* ---------- build week ---------- */
+  var week = document.getElementById("week");
+  DATA.forEach(function(d){
+    var dayEl = document.createElement("div");
+    dayEl.className = "day";
+    week.appendChild(dayEl);   // must be in DOM before per-post inputs are queried
+
+    var head = document.createElement("div");
+    head.className = "dayhead";
+    head.innerHTML = '<span class="bullet">\u25CF</span><span class="dayname">'+d.day+'</span>'+
+                     '<span class="daytag">'+d.tag+'</span><span class="dateright">'+d.date+'</span>';
+    dayEl.appendChild(head);
+
+    d.posts.forEach(function(p){
+      var row = document.createElement("div");
+      row.className = "post";
+      row.dataset.id = p.id;
+
+      var lab = document.createElement("label");
+      lab.className = "boxwrap";
+      lab.innerHTML = '<input type="checkbox" id="c_'+p.id+'"><span class="box"></span>';
+      row.appendChild(lab);
+
+      var body = document.createElement("div");
+      body.className = "body";
+      body.innerHTML =
+        '<div class="meta"><span class="slot '+(p.type==="card"?"b":p.type==="conf"?"c":"")+'">'+p.slot+' \u00B7 '+TYPES[p.type]+'</span>'+
+        '<span class="ch">'+p.ch+'</span><span class="total" id="tot_'+p.id+'"></span></div>'+
+        '<div class="topic">'+p.text+'</div>'+
+        '<div class="track"><span class="h">24h</span>'+
+          KEYS.map(function(k){
+            return '<span class="f"><label for="e_'+p.id+'_'+k+'">'+k+'</label>'+
+                   '<input type="number" inputmode="numeric" min="0" step="1" id="e_'+p.id+'_'+k+'" data-pid="'+p.id+'" data-k="'+k+'"></span>';
+          }).join("")+
+        '</div>';
+      row.appendChild(body);
+      dayEl.appendChild(row);
+
+      var cb = lab.querySelector("input");
+      cb.checked = !!state.checked[p.id];
+      row.classList.toggle("done", cb.checked);
+      cb.addEventListener("change", function(){
+        state.checked[p.id] = cb.checked;
+        row.classList.toggle("done", cb.checked);
+        save(); recalc();
+      });
+
+      KEYS.forEach(function(k){
+        var inp = document.getElementById("e_"+p.id+"_"+k);
+        var v = (state.eng[p.id]||{})[k];
+        if(v !== undefined && v !== null && v !== "") inp.value = v;
+        inp.addEventListener("input", function(){
+          state.eng[p.id] = state.eng[p.id] || {};
+          state.eng[p.id][k] = inp.value;
+          save(); recalc();
+        });
+      });
+    });
+
+    week.appendChild(dayEl);
+  });
+
+  /* ---------- notes + followers ---------- */
+  document.getElementById("rFollowers").value = state.followers || "";
+  document.getElementById("rFollowers").addEventListener("input", function(e){
+    state.followers = e.target.value; save(); recalc();
+  });
+  ["best","worst","keep","kill","test"].forEach(function(n){
+    var el = document.getElementById("n"+n.charAt(0).toUpperCase()+n.slice(1));
+    el.value = state.notes[n] || "";
+    el.addEventListener("input", function(){ state.notes[n] = el.value; save(); });
+  });
+
+  /* ---------- recalc ---------- */
+  function num(x){ var n = parseFloat(x); return isFinite(n) && n > 0 ? n : 0; }
+
+  function recalc(){
+    var posted = 0, totals = {likes:0, replies:0, reposts:0, saves:0};
+    var byType = {take:0, card:0, conf:0};
+
+    DATA.forEach(function(d){
+      d.posts.forEach(function(p){
+        if(state.checked[p.id]) posted++;
+        var e = state.eng[p.id] || {};
+        var post = 0;
+        KEYS.forEach(function(k){ var v = num(e[k]); totals[k] += v; post += v; });
+        byType[p.type] += post;
+        var t = document.getElementById("tot_"+p.id);
+        t.textContent = post ? "= " + post : "";
+        t.classList.toggle("on", post > 0);
+      });
+    });
+
+    document.getElementById("pgPost").textContent = posted;
+    document.getElementById("rPosted").textContent = posted + " / 15";
+
+    function set(id, val, raw){
+      var el = document.getElementById(id);
+      if(!raw){ el.textContent = "\u2014"; el.classList.add("empty"); }
+      else { el.textContent = val; el.classList.remove("empty"); }
+      return el;
+    }
+
+    KEYS.forEach(function(k){
+      var map = {likes:"rLikes", replies:"rReplies", reposts:"rReposts", saves:"rSaves"};
+      set(map[k], totals[k].toLocaleString("id-ID"), totals[k] > 0);
+    });
+
+    var sum = KEYS.reduce(function(a,k){ return a + totals[k]; }, 0);
+    set("rAvg", posted ? (totals.likes/posted).toFixed(1) : "", posted > 0 && totals.likes > 0);
+
+    var followers = num(state.followers);
+    var eng = (posted && followers) ? (sum / (posted * followers) * 100) : 0;
+    set("rEng", eng ? eng.toFixed(2) + "%" : "", eng > 0);
+
+    // format winner
+    var fmt = document.getElementById("fmtRow");
+    var best = Math.max(byType.take, byType.card, byType.conf);
+    fmt.innerHTML = ["take","card","conf"].map(function(t){
+      var win = byType[t] > 0 && byType[t] === best;
+      return '<span class="fpill'+(win?" win":"")+'">'+TYPES[t]+' <b>'+byType[t]+'</b></span>';
+    }).join("");
+  }
+
+  /* ---------- copy recap ---------- */
+  document.getElementById("btnCopy").addEventListener("click", function(){
+    var posted = 0, totals = {likes:0,replies:0,reposts:0,saves:0}, byType={take:0,card:0,conf:0};
+    var lines = [];
+    DATA.forEach(function(d){
+      d.posts.forEach(function(p){
+        var e = state.eng[p.id] || {};
+        var tot = 0;
+        KEYS.forEach(function(k){ var v = num(e[k]); totals[k] += v; tot += v; });
+        byType[p.type] += tot;
+        if(state.checked[p.id]) posted++;
+        lines.push((state.checked[p.id] ? "[x] " : "[ ] ") + d.date + " " + p.slot + " " + p.ch + " — " + p.text +
+                   "  (L" + num(e.likes) + " R" + num(e.replies) + " RT" + num(e.reposts) + " S" + num(e.saves) + ")");
+      });
+    });
+    var sum = KEYS.reduce(function(a,k){return a+totals[k];},0);
+    var followers = num(state.followers);
+    var out = "RECAP WEEK 01 · 03-07 nov 2026 · @ana.supernova\n" +
+      "posted " + posted + "/15\n" +
+      "likes " + totals.likes + " · replies " + totals.replies + " · reposts " + totals.reposts + " · saves " + totals.saves + "\n" +
+      "avg likes/post " + (posted ? (totals.likes/posted).toFixed(1) : "-") + "\n" +
+      "engagement " + ((posted && followers) ? (sum/(posted*followers)*100).toFixed(2) : "-") + "%\n" +
+      "format: hot take " + byType.take + " · prompt card " + byType.card + " · confession " + byType.conf + "\n" +
+      "best: " + (state.notes.best||"-") + "\nworst: " + (state.notes.worst||"-") + "\n" +
+      "keep: " + (state.notes.keep||"-") + "\nkill: " + (state.notes.kill||"-") + "\ntest: " + (state.notes.test||"-") + "\n\n" +
+      lines.join("\n");
+
+    function done(){ savedTag.textContent = "recap dicopy"; savedTag.classList.add("on");
+                     setTimeout(function(){ savedTag.classList.remove("on"); savedTag.textContent="tersimpan"; }, 1600); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(out).then(done, fallback);
+    } else fallback();
+
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = out; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){ alert(out); }
+      document.body.removeChild(ta);
+    }
+  });
+
+  document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
+
+  document.getElementById("btnReset").addEventListener("click", function(){
+    if(!confirm("Reset semua centang dan angka minggu ini?")) return;
+    state = {checked:{}, eng:{}, notes:{}, followers:""};
+    try{ localStorage.removeItem(STORE); }catch(e){}
+    location.reload();
+  });
+
+  recalc();
+})();
+</script>
+</body>
+</html>
