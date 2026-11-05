@@ -1,0 +1,30 @@
+{
+  "week": "week 01",
+  "account": "@ana.supernova",
+  "range_label": "06 – 07 nov 2026",
+  "span_label": "jumat – sabtu",
+  "footnote": "minggu 08 nov · libur + recap  ·  senin 09 nov · week 02 (ch.01–06)",
+  "slots": [
+    { "time": "09:00", "type": "take", "label": "hot take" },
+    { "time": "13:00", "type": "card", "label": "prompt card" },
+    { "time": "20:30", "type": "conf", "label": "confession" }
+  ],
+  "days": [
+    {
+      "day": "jumat", "date": "06 nov", "iso": "2026-11-06", "tag": "consumption → action",
+      "posts": [
+        { "ch": "ch.07", "type": "take", "text": "200 saves, 0 actions. that’s a graveyard i keep feeding" },
+        { "ch": "ch.08", "type": "card", "text": "save → action in 10 minutes" },
+        { "ch": "ch.09", "type": "conf", "text": "every sunday: what did i do that i don’t remember doing?" }
+      ]
+    },
+    {
+      "day": "sabtu", "date": "07 nov", "iso": "2026-11-07", "tag": "context + off-ramp",
+      "posts": [
+        { "ch": "ch.10", "type": "take", "text": "AI can’t tell you what to wear. it doesn’t know you." },
+        { "ch": "ch.11", "type": "card", "text": "the 5-line context dump that upgrades every prompt" },
+        { "ch": "ch.12", "type": "conf", "text": "there is no off-ramp. so i built one." }
+      ]
+    }
+  ]
+}
