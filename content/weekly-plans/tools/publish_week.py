@@ -19,10 +19,10 @@ import json
 import os
 import re
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-
-import requests
 
 WITA = timezone(timedelta(hours=8))
 BASE = "https://api.zernio.com/v1"
@@ -59,6 +59,26 @@ def parse_captions(md_path):
     return out
 
 
+def api_call(method, path, key, payload=None, timeout=60):
+    """Call a Zernio endpoint with stdlib only. Returns (status, parsed_body)."""
+    data = json.dumps(payload).encode("utf-8") if payload is not None else None
+    headers = {"Authorization": f"Bearer {key}", "Accept": "application/json"}
+    if data:
+        headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(BASE + path, data=data, headers=headers, method=method)
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            body, status = r.read().decode("utf-8", "replace"), r.status
+    except urllib.error.HTTPError as e:
+        body, status = e.read().decode("utf-8", "replace"), e.code
+    except Exception as e:
+        return None, {"error": str(e)}
+    try:
+        return status, json.loads(body)
+    except ValueError:
+        return status, {"raw": body[:300]}
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     dry = "--dry-run" in sys.argv
@@ -76,12 +96,10 @@ def main():
     slot_time = {s["type"]: s["time"] for s in week["slots"]}
     now = datetime.now(WITA)
 
-    headers = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
-
     # existing content in the last 24h, to respect the duplicate guard
     try:
-        recent = requests.get(f"{BASE}/posts?limit=100", headers=headers, timeout=30).json()
-        recent_contents = {(p.get("content") or "").strip() for p in recent.get("posts", [])}
+        _st, recent = api_call("GET", "/posts?limit=100", key)
+        recent_contents = {(p.get("content") or "").strip() for p in (recent or {}).get("posts", [])}
     except Exception:
         recent_contents = set()
 
@@ -127,17 +145,11 @@ def main():
             "timezone": "Asia/Makassar",
             "platforms": [{"platform": "threads", "accountId": acct}],
         }
-        try:
-            r = requests.post(f"{BASE}/posts", headers=headers, json=payload, timeout=60)
-        except Exception as e:
-            errors.append(f"{item['label']}: request failed {e}")
+        status, body = api_call("POST", "/posts", key, payload=payload)
+        if status not in (200, 201):
+            errors.append(f"{item['label']}: HTTP {status} {str(body)[:200]}")
             continue
 
-        if r.status_code not in (200, 201):
-            errors.append(f"{item['label']}: HTTP {r.status_code} {r.text[:200]}")
-            continue
-
-        body = r.json()
         pid = (body.get("post") or {}).get("_id")
         if not pid:
             errors.append(f"{item['label']}: no post._id in response {str(body)[:200]}")

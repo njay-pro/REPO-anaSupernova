@@ -11,10 +11,10 @@ Run it on a schedule (e.g. every 3 hours) so numbers stay fresh; each post's
 import json
 import os
 import sys
+import urllib.error
+import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-
-import requests
 
 WITA = timezone(timedelta(hours=8))
 BASE = "https://api.zernio.com/v1"
@@ -34,6 +34,25 @@ def load_env():
                 k, v = line.split("=", 1)
                 os.environ.setdefault(k.strip(), v.strip())
             return
+
+
+def api_get(path, key, timeout=30):
+    """GET a Zernio path with stdlib only. Returns (status_code, parsed_body)."""
+    req = urllib.request.Request(
+        BASE + path,
+        headers={"Authorization": f"Bearer {key}", "Accept": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            body, status = r.read().decode("utf-8", "replace"), r.status
+    except urllib.error.HTTPError as e:
+        body, status = e.read().decode("utf-8", "replace"), e.code
+    except Exception as e:
+        return None, {"error": str(e)}
+    try:
+        return status, json.loads(body)
+    except ValueError:
+        return status, {"raw": body[:300]}
 
 
 def threads_block(payload):
@@ -58,7 +77,6 @@ def main():
     key = os.environ.get("ZERNIO_API_KEY")
     if not key:
         raise SystemExit("missing ZERNIO_API_KEY")
-    headers = {"Authorization": f"Bearer {key}"}
 
     postmap = json.loads(pm_path.read_text(encoding="utf-8"))
     now = datetime.now(WITA)
@@ -66,18 +84,11 @@ def main():
 
     for ch, meta in postmap.items():
         pid = meta["zernio_id"]
-        try:
-            r = requests.get(f"{BASE}/analytics?postId={pid}", headers=headers, timeout=30)
-        except Exception as e:
-            problems.append(f"{ch}: request failed {e}")
+        status, d = api_get(f"/analytics?postId={pid}", key)
+        # 202 = valid payload, post not published yet (analytics still zeroed)
+        if status not in (200, 202) or "postId" not in d:
+            problems.append(f"{ch}: HTTP {status} {str(d)[:120]}")
             continue
-        if r.status_code not in (200, 202):
-            problems.append(f"{ch}: HTTP {r.status_code} {r.text[:120]}")
-            continue
-
-        # 202 = valid payload, just not published yet (analytics still zeroed)
-
-        d = r.json()
         a = d.get("analytics") or {}
         th = threads_block(d)
         url = th.get("platformPostUrl") or a.get("platformPostUrl")
