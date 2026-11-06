@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-06T18:47:57+08:00",
+ "generated_at": "2026-11-06T20:48:57+08:00",
  "source": "zernio /analytics",
  "week_json": "week-01-2026-11-06.json",
  "posts": {
@@ -18,7 +18,7 @@
    "reach": 0,
    "engagement_rate": 18.75,
    "url": "https://www.threads.com/@ana.supernova/post/DfYYLkcCkOn",
-   "hours_since_publish": 9.8
+   "hours_since_publish": 11.8
   },
   "ch.08": {
    "zernio_id": "6aec93dd43a9e45c90ea5f0f",
@@ -31,16 +31,16 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 17,
+   "views": 18,
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfYz1aQilVw",
-   "hours_since_publish": 5.8
+   "hours_since_publish": 7.8
   },
   "ch.09": {
    "zernio_id": "6aec93decade5bf9cadbd414",
-   "status": "scheduled",
-   "published_at": null,
+   "status": "published",
+   "published_at": "2026-11-06T12:31:04.775Z",
    "scheduled_for": "2026-11-06T20:30:00+08:00",
    "label": "jumat 06 nov 20:30 ch.09",
    "likes": 0,
@@ -51,8 +51,8 @@
    "views": 0,
    "reach": 0,
    "engagement_rate": 0,
-   "url": null,
-   "hours_since_publish": null
+   "url": "https://www.threads.com/@ana.supernova/post/DfZnIunim9p",
+   "hours_since_publish": 0.3
   },
   "ch.10": {
    "zernio_id": "6aec93de43a9e45c90ea5f19",
@@ -112,8 +112,8 @@
   "reposts": 0,
   "saves": 0,
   "shares": 0,
-  "views": 33,
-  "published_count": 2,
-  "avg_likes": 1.0
+  "views": 34,
+  "published_count": 3,
+  "avg_likes": 0.7
  }
 }
