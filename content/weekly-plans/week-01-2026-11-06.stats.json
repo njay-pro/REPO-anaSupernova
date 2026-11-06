@@ -1,12 +1,12 @@
 {
- "generated_at": "2026-11-05T22:38:47+08:00",
+ "generated_at": "2026-11-06T13:33:25+08:00",
  "source": "zernio /analytics",
  "week_json": "week-01-2026-11-06.json",
  "posts": {
   "ch.07": {
    "zernio_id": "6aec93dd43a9e45c90ea5f0c",
-   "status": "scheduled",
-   "published_at": null,
+   "status": "published",
+   "published_at": "2026-11-06T01:01:11.934Z",
    "scheduled_for": "2026-11-06T09:00:00+08:00",
    "label": "jumat 06 nov 09:00 ch.07",
    "likes": 0,
@@ -14,16 +14,16 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 0,
+   "views": 8,
    "reach": 0,
    "engagement_rate": 0,
-   "url": null,
-   "hours_since_publish": null
+   "url": "https://www.threads.com/@ana.supernova/post/DfYYLkcCkOn",
+   "hours_since_publish": 4.5
   },
   "ch.08": {
    "zernio_id": "6aec93dd43a9e45c90ea5f0f",
-   "status": "scheduled",
-   "published_at": null,
+   "status": "published",
+   "published_at": "2026-11-06T05:02:49.778Z",
    "scheduled_for": "2026-11-06T13:00:00+08:00",
    "label": "jumat 06 nov 13:00 ch.08",
    "likes": 0,
@@ -35,7 +35,7 @@
    "reach": 0,
    "engagement_rate": 0,
    "url": null,
-   "hours_since_publish": null
+   "hours_since_publish": 0.5
   },
   "ch.09": {
    "zernio_id": "6aec93decade5bf9cadbd414",
@@ -112,8 +112,8 @@
   "reposts": 0,
   "saves": 0,
   "shares": 0,
-  "views": 0,
-  "published_count": 0,
-  "avg_likes": 0
+  "views": 8,
+  "published_count": 2,
+  "avg_likes": 0.0
  }
 }
