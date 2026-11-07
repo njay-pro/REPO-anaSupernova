@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-07T21:43:36+08:00",
+ "generated_at": "2026-11-07T23:44:36+08:00",
  "source": "zernio /analytics",
  "week_json": "week-01-2026-11-06.json",
  "posts": {
@@ -14,11 +14,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 23,
+   "views": 24,
    "reach": 0,
-   "engagement_rate": 13.04,
+   "engagement_rate": 12.5,
    "url": "https://www.threads.com/@ana.supernova/post/DfYYLkcCkOn",
-   "hours_since_publish": 36.7
+   "hours_since_publish": 38.7
   },
   "ch.08": {
    "zernio_id": "6aec93dd43a9e45c90ea5f0f",
@@ -35,7 +35,7 @@
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfYz1aQilVw",
-   "hours_since_publish": 32.7
+   "hours_since_publish": 34.7
   },
   "ch.09": {
    "zernio_id": "6aec93decade5bf9cadbd414",
@@ -48,11 +48,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 25,
+   "views": 26,
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfZnIunim9p",
-   "hours_since_publish": 25.2
+   "hours_since_publish": 27.2
   },
   "ch.10": {
    "zernio_id": "6aec93de43a9e45c90ea5f19",
@@ -65,11 +65,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 147,
+   "views": 148,
    "reach": 0,
    "engagement_rate": 0.68,
    "url": "https://www.threads.com/@ana.supernova/post/Dfa9RoICDzK",
-   "hours_since_publish": 12.7
+   "hours_since_publish": 14.7
   },
   "ch.11": {
    "zernio_id": "6aec93df43a9e45c90ea5f22",
@@ -86,7 +86,7 @@
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfbYeEXjM0p",
-   "hours_since_publish": 8.7
+   "hours_since_publish": 10.7
   },
   "ch.12": {
    "zernio_id": "6aec93df43a9e45c90ea5f27",
@@ -99,11 +99,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 0,
+   "views": 51,
    "reach": 0,
    "engagement_rate": 0,
-   "url": null,
-   "hours_since_publish": 1.2
+   "url": "https://www.threads.com/@ana.supernova/post/DfcMGy9jeh2",
+   "hours_since_publish": 3.2
   }
  },
  "totals": {
@@ -112,7 +112,7 @@
   "reposts": 0,
   "saves": 0,
   "shares": 0,
-  "views": 224,
+  "views": 278,
   "published_count": 6,
   "avg_likes": 0.5
  }
