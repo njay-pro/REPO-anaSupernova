@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-09T00:23:07+08:00",
+ "generated_at": "2026-11-09T02:24:09+08:00",
  "source": "zernio /analytics",
  "week_json": "week-01-2026-11-06.json",
  "posts": {
@@ -14,11 +14,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 27,
+   "views": 28,
    "reach": 0,
-   "engagement_rate": 11.11,
+   "engagement_rate": 10.71,
    "url": "https://www.threads.com/@ana.supernova/post/DfYYLkcCkOn",
-   "hours_since_publish": 63.4
+   "hours_since_publish": 65.4
   },
   "ch.08": {
    "zernio_id": "6aec93dd43a9e45c90ea5f0f",
@@ -31,11 +31,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 24,
+   "views": 25,
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfYz1aQilVw",
-   "hours_since_publish": 59.3
+   "hours_since_publish": 61.4
   },
   "ch.09": {
    "zernio_id": "6aec93decade5bf9cadbd414",
@@ -48,11 +48,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 27,
+   "views": 28,
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfZnIunim9p",
-   "hours_since_publish": 51.9
+   "hours_since_publish": 53.9
   },
   "ch.10": {
    "zernio_id": "6aec93de43a9e45c90ea5f19",
@@ -65,11 +65,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 152,
+   "views": 153,
    "reach": 0,
-   "engagement_rate": 0.66,
+   "engagement_rate": 0.65,
    "url": "https://www.threads.com/@ana.supernova/post/Dfa9RoICDzK",
-   "hours_since_publish": 39.3
+   "hours_since_publish": 41.3
   },
   "ch.11": {
    "zernio_id": "6aec93df43a9e45c90ea5f22",
@@ -82,11 +82,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 9,
+   "views": 10,
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfbYeEXjM0p",
-   "hours_since_publish": 35.4
+   "hours_since_publish": 37.4
   },
   "ch.12": {
    "zernio_id": "6aec93df43a9e45c90ea5f27",
@@ -99,11 +99,11 @@
    "reposts": 0,
    "saves": 0,
    "shares": 0,
-   "views": 60,
+   "views": 62,
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfcMGy9jeh2",
-   "hours_since_publish": 27.8
+   "hours_since_publish": 29.9
   }
  },
  "totals": {
@@ -112,7 +112,7 @@
   "reposts": 0,
   "saves": 0,
   "shares": 0,
-  "views": 299,
+  "views": 306,
   "published_count": 6,
   "avg_likes": 0.5
  }
