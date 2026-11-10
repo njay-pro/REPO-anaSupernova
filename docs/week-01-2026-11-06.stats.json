@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-10T23:47:25+08:00",
+ "generated_at": "2026-11-10T23:49:40+08:00",
  "source": "zernio /analytics",
  "week_json": "week-01-2026-11-06.json",
  "posts": {
@@ -35,7 +35,7 @@
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfYz1aQilVw",
-   "hours_since_publish": 106.7
+   "hours_since_publish": 106.8
   },
   "ch.09": {
    "zernio_id": "6aec93decade5bf9cadbd414",
@@ -69,7 +69,7 @@
    "reach": 0,
    "engagement_rate": 0.65,
    "url": "https://www.threads.com/@ana.supernova/post/Dfa9RoICDzK",
-   "hours_since_publish": 86.7
+   "hours_since_publish": 86.8
   },
   "ch.11": {
    "zernio_id": "6aec93df43a9e45c90ea5f22",
@@ -103,7 +103,7 @@
    "reach": 0,
    "engagement_rate": 0,
    "url": "https://www.threads.com/@ana.supernova/post/DfcMGy9jeh2",
-   "hours_since_publish": 75.2
+   "hours_since_publish": 75.3
   }
  },
  "totals": {
